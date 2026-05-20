@@ -2,7 +2,7 @@
 
 import { Filter, X } from "lucide-react";
 import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
+import { CategoryAutocomplete } from "@/features/books/components/category-autocomplete";
 import { cn } from "@/shared/lib/utils";
 import { SORT_OPTIONS, type AvailabilityFilter } from "@/features/books/types/book";
 
@@ -50,11 +50,10 @@ export function BookFilters({
           <label htmlFor="category-filter" className="text-xs font-medium text-muted-foreground">
             Category
           </label>
-          <Input
+          <CategoryAutocomplete
             id="category-filter"
-            placeholder="e.g. Programming"
             value={category}
-            onChange={(e) => onCategoryChange(e.target.value)}
+            onChange={onCategoryChange}
             disabled={disabled}
           />
         </div>

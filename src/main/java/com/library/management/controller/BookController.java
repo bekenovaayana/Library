@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/books")
 @Tag(name = "Books", description = "Book catalog management and search")
@@ -67,11 +69,19 @@ public class BookController {
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String author,
             @RequestParam(required = false) String category,
+            @RequestParam(required = false) String q,
             @RequestParam(required = false) BookStatus status,
             @PageableDefault(size = 10, sort = "title", direction = Sort.Direction.ASC) Pageable pageable
     ) {
-        BookSearchCriteria criteria = BookSearchCriteria.of(title, author, category, status);
+        BookSearchCriteria criteria = BookSearchCriteria.of(title, author, category, q, status);
         return ResponseEntity.ok(bookService.searchBooks(criteria, pageable));
+    }
+
+    @GetMapping("/categories")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @Operation(summary = "List book categories", description = "Distinct categories for autocomplete")
+    public ResponseEntity<List<String>> getCategories(@RequestParam(required = false) String prefix) {
+        return ResponseEntity.ok(bookService.getCategories(prefix));
     }
 
     @GetMapping("/{id}")

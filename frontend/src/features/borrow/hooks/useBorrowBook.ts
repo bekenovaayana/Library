@@ -13,7 +13,6 @@ import { getApiErrorMessage } from "@/services/api/apiClient";
 import { useAuthStore } from "@/store/authStore";
 
 interface BorrowContext {
-  previousMyBorrows?: BorrowRecord[];
   previousBookDetail?: BookDetail;
 }
 
@@ -28,7 +27,6 @@ export function useBorrowBook() {
       await queryClient.cancelQueries({ queryKey: borrowKeys.my() });
       await queryClient.cancelQueries({ queryKey: bookKeys.detail(bookId) });
 
-      const previousMyBorrows = queryClient.getQueryData<BorrowRecord[]>(borrowKeys.my());
       const previousBookDetail = queryClient.getQueryData<BookDetail>(bookKeys.detail(bookId));
 
       if (previousBookDetail) {
@@ -43,22 +41,7 @@ export function useBorrowBook() {
         });
       }
 
-      if (previousMyBorrows) {
-        const optimisticRecord: BorrowRecord = {
-          borrowId: -1,
-          username,
-          bookTitle: previousBookDetail?.title ?? "Book",
-          borrowDate: new Date().toISOString(),
-          returnDate: null,
-          status: "ACTIVE",
-        };
-        queryClient.setQueryData<BorrowRecord[]>(borrowKeys.my(), [
-          optimisticRecord,
-          ...previousMyBorrows,
-        ]);
-      }
-
-      return { previousMyBorrows, previousBookDetail, bookId } satisfies BorrowContext & {
+      return { previousBookDetail, bookId } satisfies BorrowContext & {
         bookId: number;
       };
     },
@@ -70,9 +53,6 @@ export function useBorrowBook() {
       router.refresh();
     },
     onError: (error, { bookId }, context) => {
-      if (context?.previousMyBorrows) {
-        queryClient.setQueryData(borrowKeys.my(), context.previousMyBorrows);
-      }
       if (context?.previousBookDetail) {
         queryClient.setQueryData(bookKeys.detail(bookId), context.previousBookDetail);
       }

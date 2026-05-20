@@ -62,7 +62,7 @@ cp .env.example .env
 cp frontend/.env.example frontend/.env.local
 ```
 
-Edit `.env` — at minimum set `DB_PASSWORD` and `JWT_SECRET` (32+ chars).
+Copy `.env.example` → `.env` and fill **empty** `DB_PASSWORD` / `JWT_SECRET` with strong random values (see checklist in `.env.example`). Never use placeholder text in production.
 
 `frontend/.env.local` for daily dev (already correct in `.env.example`):
 
@@ -111,13 +111,12 @@ Open **http://localhost:3000** only (do not use auto-picked ports 3001/3002/3003
 cp .env.example .env
 ```
 
-Edit `.env` and set secure values (never commit `.env`):
+Edit `.env` — replace empty secret fields from `.env.example` (never commit `.env`):
 
 ```env
-DB_USERNAME=postgres
-DB_PASSWORD=your_secure_password
-JWT_SECRET=your_long_random_secret_minimum_32_characters
-APP_PORT=8080
+DB_PASSWORD=<openssl rand -base64 24>
+JWT_SECRET=<openssl rand -hex 32>
+AUTH_EXPOSE_RESET_TOKEN=false
 ```
 
 ### 2. Start the stack

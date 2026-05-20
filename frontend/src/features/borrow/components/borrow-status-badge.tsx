@@ -3,6 +3,7 @@ import type { BorrowRecordStatus } from "@/features/borrow/types/borrow";
 
 interface BorrowStatusBadgeProps {
   status: BorrowRecordStatus;
+  overdue?: boolean;
   className?: string;
 }
 
@@ -16,16 +17,22 @@ const labels: Record<BorrowRecordStatus, string> = {
   RETURNED: "Returned",
 };
 
-export function BorrowStatusBadge({ status, className }: BorrowStatusBadgeProps) {
+export function BorrowStatusBadge({ status, overdue = false, className }: BorrowStatusBadgeProps) {
+  const label = overdue && status === "ACTIVE" ? "Overdue" : labels[status];
+  const style =
+    overdue && status === "ACTIVE"
+      ? "bg-destructive/10 text-destructive"
+      : styles[status];
+
   return (
     <span
       className={cn(
         "inline-flex rounded-full px-2 py-0.5 text-xs font-medium",
-        styles[status],
+        style,
         className,
       )}
     >
-      {labels[status]}
+      {label}
     </span>
   );
 }

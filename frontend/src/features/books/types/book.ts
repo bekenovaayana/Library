@@ -12,18 +12,21 @@ export interface Book {
   author: string;
   category: string;
   status: BookStatus;
+  coverUrl?: string | null;
 }
 
 export interface BookPayload {
   title: string;
   author: string;
   category: string;
+  coverUrl?: string;
 }
 
 export interface BooksQueryParams {
   page: number;
   size: number;
   sort: string;
+  q?: string;
   title?: string;
   author?: string;
   category?: string;

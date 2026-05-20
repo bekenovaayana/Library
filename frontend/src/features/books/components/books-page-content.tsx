@@ -47,15 +47,13 @@ export function BooksPageContent() {
       </header>
 
       <BooksCatalogToolbar
-        title={filters.titleInput}
-        author={filters.authorInput}
+        query={filters.queryInput}
         category={filters.category}
         status={filters.status}
         sort={filters.sort}
         hasActiveFilters={filters.hasActiveFilters}
         disabled={isInitialLoading}
-        onTitleChange={filters.handleTitleChange}
-        onAuthorChange={filters.handleAuthorChange}
+        onQueryChange={filters.handleQueryChange}
         onCategoryChange={filters.handleCategoryChange}
         onStatusChange={filters.handleStatusChange}
         onSortChange={filters.handleSortChange}

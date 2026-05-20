@@ -65,6 +65,25 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), request);
     }
 
+    @ExceptionHandler(BorrowLimitExceededException.class)
+    public ResponseEntity<ErrorResponse> handleBorrowLimit(
+            BorrowLimitExceededException ex,
+            HttpServletRequest request
+    ) {
+        return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler({
+            ReservationAlreadyExistsException.class,
+            CannotChangeOwnRoleException.class
+    })
+    public ResponseEntity<ErrorResponse> handleBusinessRule(
+            RuntimeException ex,
+            HttpServletRequest request
+    ) {
+        return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), request);
+    }
+
     @ExceptionHandler({
             EmailAlreadyExistsException.class,
             UsernameAlreadyExistsException.class,

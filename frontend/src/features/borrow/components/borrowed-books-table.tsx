@@ -26,6 +26,7 @@ export function BorrowedBooksTable({ records, showActions = true }: BorrowedBook
           <TableRow>
             <TableHead>Book</TableHead>
             <TableHead>Borrowed</TableHead>
+            <TableHead>Due</TableHead>
             <TableHead>Returned</TableHead>
             <TableHead>Status</TableHead>
             {showActions && <TableHead className="text-right">Actions</TableHead>}
@@ -36,9 +37,14 @@ export function BorrowedBooksTable({ records, showActions = true }: BorrowedBook
             <TableRow key={record.borrowId}>
               <TableCell className="font-medium">{record.bookTitle}</TableCell>
               <TableCell>{formatBorrowDate(record.borrowDate)}</TableCell>
+              <TableCell
+                className={record.overdue ? "font-medium text-destructive" : undefined}
+              >
+                {record.dueDate ? formatBorrowDate(record.dueDate) : "—"}
+              </TableCell>
               <TableCell>{formatBorrowDate(record.returnDate)}</TableCell>
               <TableCell>
-                <BorrowStatusBadge status={record.status} />
+                <BorrowStatusBadge status={record.status} overdue={record.overdue} />
               </TableCell>
               {showActions && (
                 <TableCell className="text-right">

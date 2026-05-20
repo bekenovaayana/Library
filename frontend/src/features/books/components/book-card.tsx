@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { BookOpen, User } from "lucide-react";
+import { User } from "lucide-react";
+import { BookCover } from "@/features/books/components/book-cover";
 import { BorrowButton } from "@/features/borrow/components/borrow-button";
+import { ReserveButton } from "@/features/reservations/components/reserve-button";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/shared/ui/card";
@@ -34,7 +36,9 @@ export function BookCard({ book, className }: BookCardProps) {
         className,
       )}
     >
-      <CardHeader className="space-y-3 pb-0">
+      <BookCover title={book.title} coverUrl={book.coverUrl} className="mx-4 mt-4 w-[calc(100%-2rem)]" />
+
+      <CardHeader className="space-y-3 pb-0 pt-3">
         <div className="flex items-start justify-between gap-3">
           <CardTitle className="min-w-0 flex-1 text-base font-semibold leading-snug sm:text-[1.05rem]">
             <Link
@@ -63,29 +67,25 @@ export function BookCard({ book, className }: BookCardProps) {
           <User className="h-4 w-4 shrink-0 opacity-70" aria-hidden />
           <span className="line-clamp-1">{book.author}</span>
         </div>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground/80">
-          <BookOpen className="h-3.5 w-3.5 shrink-0" aria-hidden />
-          <span>Catalog ID {book.id}</span>
-        </div>
       </CardContent>
 
-      <CardFooter className="grid grid-cols-2 gap-2 border-t bg-muted/20 p-3 sm:p-4">
-        <Button variant="outline" size="sm" asChild className="h-9 w-full text-xs sm:text-sm">
-          <Link href={bookDetailRoute(book.id)}>Details</Link>
-        </Button>
-        {book.status === "AVAILABLE" ? (
-          <BorrowButton
-            bookId={book.id}
-            bookTitle={book.title}
-            status={book.status}
-            size="sm"
-            className="h-9 w-full text-xs sm:text-sm"
-          />
-        ) : (
-          <Button size="sm" disabled className="h-9 w-full text-xs sm:text-sm">
-            Taken
+      <CardFooter className="flex flex-col gap-2 border-t bg-muted/20 p-3 sm:p-4">
+        <div className="grid grid-cols-2 gap-2">
+          <Button variant="outline" size="sm" asChild className="h-9 w-full text-xs sm:text-sm">
+            <Link href={bookDetailRoute(book.id)}>Details</Link>
           </Button>
-        )}
+          {book.status === "AVAILABLE" ? (
+            <BorrowButton
+              bookId={book.id}
+              bookTitle={book.title}
+              status={book.status}
+              size="sm"
+              className="h-9 w-full text-xs sm:text-sm"
+            />
+          ) : (
+            <ReserveButton bookId={book.id} bookTitle={book.title} />
+          )}
+        </div>
       </CardFooter>
     </Card>
   );

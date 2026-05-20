@@ -1,20 +1,29 @@
 "use client";
 
+import { useState } from "react";
 import { BookMarked, RefreshCw } from "lucide-react";
 import { useMyBorrows } from "@/features/borrow/hooks/useMyBorrows";
 import { BorrowedBooksTable } from "@/features/borrow/components/borrowed-books-table";
 import { BorrowHistoryCard } from "@/features/borrow/components/borrow-history-card";
 import { EmptyState } from "@/shared/components/empty-state";
 import { ErrorState } from "@/shared/components/error-state";
+import { DataTablePagination } from "@/shared/components/data-table";
 import { TableSkeleton } from "@/shared/components/loading-skeleton";
 import { Spinner } from "@/shared/components/spinner";
 import { Button } from "@/shared/ui/button";
 import { getApiErrorMessage } from "@/services/api/apiClient";
 
-export function MyBooksPageContent() {
-  const { data, isLoading, isFetching, isError, error, refetch } = useMyBorrows();
+const PAGE_SIZE = 10;
 
-  const records = data ?? [];
+export function MyBooksPageContent() {
+  const [page, setPage] = useState(0);
+  const { data, isLoading, isFetching, isError, error, refetch } = useMyBorrows({
+    page,
+    size: PAGE_SIZE,
+    sort: "borrowDate,desc",
+  });
+
+  const records = data?.content ?? [];
   const activeBorrows = records.filter((r) => r.status === "ACTIVE");
   const returnedBorrows = records.filter((r) => r.status === "RETURNED");
 
@@ -43,7 +52,7 @@ export function MyBooksPageContent() {
 
       {!isError && isLoading && <TableSkeleton rows={5} />}
 
-      {!isError && !isLoading && records.length === 0 && (
+      {!isError && !isLoading && (data?.totalElements ?? 0) === 0 && (
         <EmptyState
           title="No borrowed books yet"
           description="Browse the catalog and borrow your first book."
@@ -54,7 +63,7 @@ export function MyBooksPageContent() {
       {!isError && !isLoading && activeBorrows.length > 0 && (
         <section className="space-y-4">
           <h2 className="text-xl font-semibold">
-            Currently borrowed ({activeBorrows.length})
+            Currently borrowed ({activeBorrows.length} on this page)
           </h2>
           <div className="hidden md:block">
             <BorrowedBooksTable records={activeBorrows} />
@@ -69,16 +78,24 @@ export function MyBooksPageContent() {
 
       {!isError && !isLoading && returnedBorrows.length > 0 && (
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold">Borrow history ({returnedBorrows.length})</h2>
-          <div className="hidden lg:block">
-            <BorrowedBooksTable records={returnedBorrows} showActions={false} />
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:hidden">
+          <h2 className="text-xl font-semibold">Returned</h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {returnedBorrows.map((record) => (
               <BorrowHistoryCard key={record.borrowId} record={record} />
             ))}
           </div>
         </section>
+      )}
+
+      {!isError && !isLoading && (data?.totalElements ?? 0) > 0 && (
+        <DataTablePagination
+          page={page}
+          totalPages={data?.totalPages ?? 0}
+          totalElements={data?.totalElements ?? 0}
+          onPageChange={setPage}
+          disabled={isFetching}
+          itemLabel="records"
+        />
       )}
     </div>
   );

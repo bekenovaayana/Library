@@ -68,6 +68,13 @@ app:
     allowed-origins: ${APP_CORS_ALLOWED_ORIGINS:http://localhost:3000,http://127.0.0.1:3000}
 
 application:
+  library:
+    borrow-days: ${LIBRARY_BORROW_DAYS:14}
+    max-books-per-user: ${LIBRARY_MAX_BOOKS_PER_USER:5}
+    fine-per-day: ${LIBRARY_FINE_PER_DAY:1.00}
+    max-fine: ${LIBRARY_MAX_FINE:50.00}
+    reminder-days-before-due: ${LIBRARY_REMINDER_DAYS:2}
+    notifications-enabled: ${LIBRARY_NOTIFICATIONS_ENABLED:true}
   security:
     jwt:
       secret-key: ${JWT_SECRET:library-management-jwt-secret-key-min-32-chars}

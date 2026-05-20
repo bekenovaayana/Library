@@ -31,4 +31,11 @@ export const booksApi = {
   deleteBook: async (id: number): Promise<void> => {
     await apiClient.delete(`/books/${id}`);
   },
+
+  getCategories: async (prefix?: string): Promise<string[]> => {
+    const { data } = await apiClient.get<string[]>("/books/categories", {
+      params: prefix ? { prefix } : {},
+    });
+    return data;
+  },
 };

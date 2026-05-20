@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -42,4 +43,15 @@ public class BorrowRecord {
     private LocalDateTime borrowDate;
 
     private LocalDateTime returnDate;
+
+    @Column(name = "due_date", nullable = false)
+    private LocalDateTime dueDate;
+
+    @Column(name = "fine_amount", nullable = false)
+    @Builder.Default
+    private BigDecimal fineAmount = BigDecimal.ZERO;
+
+    @Column(name = "reminder_sent", nullable = false)
+    @Builder.Default
+    private boolean reminderSent = false;
 }

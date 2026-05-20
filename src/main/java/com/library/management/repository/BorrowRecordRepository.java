@@ -21,6 +21,36 @@ public interface BorrowRecordRepository extends JpaRepository<BorrowRecord, Long
     @EntityGraph(attributePaths = {"book", "user"})
     List<BorrowRecord> findByUserUsernameOrderByBorrowDateDesc(String username);
 
+    @EntityGraph(attributePaths = {"book", "user"})
+    @Query("""
+            SELECT br FROM BorrowRecord br
+            WHERE br.user.username = :username
+            ORDER BY br.borrowDate DESC
+            """)
+    Page<BorrowRecord> findByUserUsername(@Param("username") String username, Pageable pageable);
+
+    long countByUserIdAndReturnDateIsNull(Long userId);
+
+    @EntityGraph(attributePaths = {"book", "user"})
+    @Query("""
+            SELECT br FROM BorrowRecord br
+            WHERE br.returnDate IS NULL
+              AND br.dueDate < :now
+            """)
+    List<BorrowRecord> findOverdueActive(@Param("now") java.time.LocalDateTime now);
+
+    @EntityGraph(attributePaths = {"book", "user"})
+    @Query("""
+            SELECT br FROM BorrowRecord br
+            WHERE br.returnDate IS NULL
+              AND br.reminderSent = false
+              AND br.dueDate BETWEEN :from AND :to
+            """)
+    List<BorrowRecord> findDueSoonForReminder(
+            @Param("from") java.time.LocalDateTime from,
+            @Param("to") java.time.LocalDateTime to
+    );
+
     boolean existsByBookIdAndReturnDateIsNull(Long bookId);
 
     @EntityGraph(attributePaths = {"book", "user"})

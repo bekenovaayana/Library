@@ -17,7 +17,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import com.library.management.dto.request.UpdateUserRoleRequest;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -62,5 +67,14 @@ public class AdminController {
     @ApiResponse(responseCode = "200", description = "Statistics retrieved")
     public ResponseEntity<AdminStatisticsResponse> getStatistics() {
         return ResponseEntity.ok(adminService.getStatistics());
+    }
+
+    @PatchMapping("/users/{id}/role")
+    @Operation(summary = "Promote or demote user role")
+    public ResponseEntity<AdminUserResponse> updateUserRole(
+            @PathVariable Long id,
+            @Valid @RequestBody UpdateUserRoleRequest request
+    ) {
+        return ResponseEntity.ok(adminService.updateUserRole(id, request.getRole()));
     }
 }

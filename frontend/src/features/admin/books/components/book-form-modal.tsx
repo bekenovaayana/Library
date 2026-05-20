@@ -45,20 +45,29 @@ export function BookFormModal({ open, onOpenChange, book }: BookFormModalProps) 
     if (open) {
       reset(
         book
-          ? { title: book.title, author: book.author, category: book.category }
+          ? {
+              title: book.title,
+              author: book.author,
+              category: book.category,
+              coverUrl: book.coverUrl ?? "",
+            }
           : bookFormDefaultValues,
       );
     }
   }, [open, book, reset]);
 
   const onSubmit = (values: BookFormValues) => {
+    const payload = {
+      ...values,
+      coverUrl: values.coverUrl?.trim() || undefined,
+    };
     if (isEdit && book) {
       updateMutation.mutate(
-        { id: book.id, payload: values },
+        { id: book.id, payload },
         { onSuccess: () => onOpenChange(false) },
       );
     } else {
-      createMutation.mutate(values, { onSuccess: () => onOpenChange(false) });
+      createMutation.mutate(payload, { onSuccess: () => onOpenChange(false) });
     }
   };
 
@@ -119,6 +128,16 @@ export function BookFormModal({ open, onOpenChange, book }: BookFormModalProps) 
             disabled={isPending}
             aria-invalid={Boolean(errors.category)}
             {...register("category")}
+          />
+        </FormField>
+
+        <FormField label="Cover URL" htmlFor="book-cover" error={errors.coverUrl?.message}>
+          <Input
+            id="book-cover"
+            placeholder="https://..."
+            disabled={isPending}
+            aria-invalid={Boolean(errors.coverUrl)}
+            {...register("coverUrl")}
           />
         </FormField>
       </form>

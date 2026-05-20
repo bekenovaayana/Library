@@ -49,6 +49,9 @@ public class LibraryDataInitializer implements CommandLineRunner {
         book.setAuthor(author);
         book.setCategory(category);
         book.setStatus(BookStatus.AVAILABLE);
+        book.setCoverUrl(
+                "https://placehold.co/240x360/e2e8f0/334155?text=" + title.replace(' ', '+')
+        );
         return book;
     }
 }

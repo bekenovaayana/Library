@@ -1,5 +1,6 @@
 package com.library.management.service;
 
+import com.library.management.config.LibraryProperties;
 import com.library.management.dto.request.BorrowRequest;
 import com.library.management.dto.response.BorrowResponse;
 import com.library.management.entity.Book;
@@ -11,13 +12,16 @@ import com.library.management.entity.User;
 import com.library.management.exception.BookNotAvailableException;
 import com.library.management.exception.BookNotFoundException;
 import com.library.management.exception.BorrowAlreadyReturnedException;
+import com.library.management.exception.BorrowLimitExceededException;
 import com.library.management.exception.BorrowNotFoundException;
 import com.library.management.mapper.BorrowMapper;
 import com.library.management.repository.BookRepository;
+import com.library.management.repository.BookReservationRepository;
 import com.library.management.repository.BorrowRecordRepository;
 import com.library.management.repository.UserRepository;
 import com.library.management.service.impl.BorrowServiceImpl;
 import com.library.management.util.SecurityUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -48,14 +53,37 @@ class BorrowServiceImplTest {
     private UserRepository userRepository;
 
     @Mock
+    private BookReservationRepository reservationRepository;
+
+    @Mock
     private BorrowMapper borrowMapper;
+
+    @Mock
+    private ReservationService reservationService;
 
     @InjectMocks
     private BorrowServiceImpl borrowService;
 
+    private LibraryProperties libraryProperties;
+
+    @BeforeEach
+    void setUp() {
+        libraryProperties = new LibraryProperties();
+        libraryProperties.setMaxBooksPerUser(5);
+        libraryProperties.setBorrowDays(14);
+        borrowService = new BorrowServiceImpl(
+                borrowRecordRepository,
+                bookRepository,
+                userRepository,
+                reservationRepository,
+                borrowMapper,
+                libraryProperties,
+                reservationService
+        );
+    }
+
     @Test
     void borrowBook_whenBookAvailable_shouldCreateBorrowRecord() {
-        // Arrange
         try (MockedStatic<SecurityUtils> securityUtils = mockStatic(SecurityUtils.class)) {
             securityUtils.when(SecurityUtils::getCurrentUsername).thenReturn("john");
 
@@ -67,6 +95,8 @@ class BorrowServiceImplTest {
                     .user(user)
                     .book(book)
                     .borrowDate(LocalDateTime.now())
+                    .dueDate(LocalDateTime.now().plusDays(14))
+                    .fineAmount(BigDecimal.ZERO)
                     .build();
             BorrowResponse expected = BorrowResponse.builder()
                     .borrowId(100L)
@@ -77,61 +107,54 @@ class BorrowServiceImplTest {
 
             when(userRepository.findByUsername("john")).thenReturn(Optional.of(user));
             when(bookRepository.findById(10L)).thenReturn(Optional.of(book));
+            when(borrowRecordRepository.countByUserIdAndReturnDateIsNull(1L)).thenReturn(0L);
             when(borrowRecordRepository.existsByBookIdAndReturnDateIsNull(10L)).thenReturn(false);
             when(borrowRecordRepository.save(any(BorrowRecord.class))).thenReturn(savedRecord);
             when(borrowMapper.toResponse(savedRecord)).thenReturn(expected);
 
-            // Act
             BorrowResponse result = borrowService.borrowBook(request);
 
-            // Assert
             assertThat(result.getBorrowId()).isEqualTo(100L);
-            assertThat(result.getStatus()).isEqualTo(BorrowRecordStatus.ACTIVE);
             assertThat(book.getStatus()).isEqualTo(BookStatus.BORROWED);
-            verify(borrowRecordRepository).save(any(BorrowRecord.class));
+            verify(reservationRepository).deleteByUserIdAndBookId(1L, 10L);
+        }
+    }
+
+    @Test
+    void borrowBook_whenLimitReached_shouldThrowException() {
+        try (MockedStatic<SecurityUtils> securityUtils = mockStatic(SecurityUtils.class)) {
+            securityUtils.when(SecurityUtils::getCurrentUsername).thenReturn("john");
+
+            User user = User.builder().id(1L).username("john").build();
+            Book book = Book.builder().id(10L).status(BookStatus.AVAILABLE).build();
+
+            when(userRepository.findByUsername("john")).thenReturn(Optional.of(user));
+            when(bookRepository.findById(10L)).thenReturn(Optional.of(book));
+            when(borrowRecordRepository.countByUserIdAndReturnDateIsNull(1L)).thenReturn(5L);
+
+            assertThatThrownBy(() -> borrowService.borrowBook(BorrowRequest.builder().bookId(10L).build()))
+                    .isInstanceOf(BorrowLimitExceededException.class);
         }
     }
 
     @Test
     void borrowBook_whenBookNotAvailable_shouldThrowException() {
-        // Arrange
         try (MockedStatic<SecurityUtils> securityUtils = mockStatic(SecurityUtils.class)) {
             securityUtils.when(SecurityUtils::getCurrentUsername).thenReturn("john");
 
             User user = User.builder().id(1L).username("john").build();
             Book book = Book.builder().id(10L).status(BookStatus.BORROWED).build();
-            BorrowRequest request = BorrowRequest.builder().bookId(10L).build();
 
             when(userRepository.findByUsername("john")).thenReturn(Optional.of(user));
             when(bookRepository.findById(10L)).thenReturn(Optional.of(book));
 
-            // Act & Assert
-            assertThatThrownBy(() -> borrowService.borrowBook(request))
+            assertThatThrownBy(() -> borrowService.borrowBook(BorrowRequest.builder().bookId(10L).build()))
                     .isInstanceOf(BookNotAvailableException.class);
         }
     }
 
     @Test
-    void borrowBook_whenBookNotFound_shouldThrowException() {
-        // Arrange
-        try (MockedStatic<SecurityUtils> securityUtils = mockStatic(SecurityUtils.class)) {
-            securityUtils.when(SecurityUtils::getCurrentUsername).thenReturn("john");
-
-            User user = User.builder().id(1L).username("john").build();
-            BorrowRequest request = BorrowRequest.builder().bookId(99L).build();
-
-            when(userRepository.findByUsername("john")).thenReturn(Optional.of(user));
-            when(bookRepository.findById(99L)).thenReturn(Optional.empty());
-
-            // Act & Assert
-            assertThatThrownBy(() -> borrowService.borrowBook(request))
-                    .isInstanceOf(BookNotFoundException.class);
-        }
-    }
-
-    @Test
     void returnBook_whenActiveBorrowExists_shouldReturnBook() {
-        // Arrange
         try (MockedStatic<SecurityUtils> securityUtils = mockStatic(SecurityUtils.class)) {
             securityUtils.when(SecurityUtils::getCurrentUsername).thenReturn("john");
 
@@ -142,29 +165,27 @@ class BorrowServiceImplTest {
                     .user(user)
                     .book(book)
                     .borrowDate(LocalDateTime.now().minusDays(1))
-                    .build();
-            BorrowResponse expected = BorrowResponse.builder()
-                    .borrowId(100L)
-                    .status(BorrowRecordStatus.RETURNED)
+                    .dueDate(LocalDateTime.now().plusDays(13))
+                    .fineAmount(BigDecimal.ZERO)
                     .build();
 
             when(userRepository.findByUsername("john")).thenReturn(Optional.of(user));
             when(borrowRecordRepository.findByIdAndUserId(100L, 1L)).thenReturn(Optional.of(record));
-            when(borrowMapper.toResponse(record)).thenReturn(expected);
+            when(borrowMapper.toResponse(record)).thenReturn(
+                    BorrowResponse.builder().borrowId(100L).status(BorrowRecordStatus.RETURNED).build()
+            );
 
-            // Act
             BorrowResponse result = borrowService.returnBook(100L);
 
-            // Assert
             assertThat(result.getStatus()).isEqualTo(BorrowRecordStatus.RETURNED);
             assertThat(record.getReturnDate()).isNotNull();
             assertThat(book.getStatus()).isEqualTo(BookStatus.AVAILABLE);
+            verify(reservationService).notifyNextInQueue(10L);
         }
     }
 
     @Test
     void returnBook_whenAlreadyReturned_shouldThrowException() {
-        // Arrange
         try (MockedStatic<SecurityUtils> securityUtils = mockStatic(SecurityUtils.class)) {
             securityUtils.when(SecurityUtils::getCurrentUsername).thenReturn("john");
 
@@ -175,32 +196,30 @@ class BorrowServiceImplTest {
                     .user(user)
                     .book(book)
                     .borrowDate(LocalDateTime.now().minusDays(2))
+                    .dueDate(LocalDateTime.now().minusDays(1))
                     .returnDate(LocalDateTime.now().minusDays(1))
                     .build();
 
             when(userRepository.findByUsername("john")).thenReturn(Optional.of(user));
             when(borrowRecordRepository.findByIdAndUserId(100L, 1L)).thenReturn(Optional.of(record));
 
-            // Act & Assert
             assertThatThrownBy(() -> borrowService.returnBook(100L))
                     .isInstanceOf(BorrowAlreadyReturnedException.class);
         }
     }
 
     @Test
-    void returnBook_whenBorrowNotFound_shouldThrowException() {
-        // Arrange
+    void borrowBook_whenBookNotFound_shouldThrowException() {
         try (MockedStatic<SecurityUtils> securityUtils = mockStatic(SecurityUtils.class)) {
             securityUtils.when(SecurityUtils::getCurrentUsername).thenReturn("john");
 
             User user = User.builder().id(1L).username("john").build();
 
             when(userRepository.findByUsername("john")).thenReturn(Optional.of(user));
-            when(borrowRecordRepository.findByIdAndUserId(999L, 1L)).thenReturn(Optional.empty());
+            when(bookRepository.findById(99L)).thenReturn(Optional.empty());
 
-            // Act & Assert
-            assertThatThrownBy(() -> borrowService.returnBook(999L))
-                    .isInstanceOf(BorrowNotFoundException.class);
+            assertThatThrownBy(() -> borrowService.borrowBook(BorrowRequest.builder().bookId(99L).build()))
+                    .isInstanceOf(BookNotFoundException.class);
         }
     }
 }

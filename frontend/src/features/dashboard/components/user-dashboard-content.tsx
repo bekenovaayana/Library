@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import {
   ArrowRight,
   BookMarked,
@@ -16,21 +17,28 @@ import { ROUTES } from "@/shared/constants/routes";
 import { DashboardGrid, StatsCard, StatsCardSkeleton } from "@/shared/components/dashboard";
 import { EmptyState } from "@/shared/components/empty-state";
 import { ErrorState } from "@/shared/components/error-state";
+import { DataTablePagination } from "@/shared/components/data-table";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
 import { getApiErrorMessage } from "@/services/api/apiClient";
 
-const RECENT_LIMIT = 5;
+const PAGE_SIZE = 6;
 
 export function UserDashboardContent() {
   const user = useAuthStore((state) => state.user);
   const isAdmin = user?.role === "ADMIN";
-  const { data, isLoading, isError, error, refetch } = useMyBorrows();
+  const [page, setPage] = useState(0);
 
-  const records = data ?? [];
+  const { data, isLoading, isError, error, refetch } = useMyBorrows({
+    page,
+    size: PAGE_SIZE,
+    sort: "borrowDate,desc",
+  });
+
+  const records = data?.content ?? [];
+  const totalElements = data?.totalElements ?? 0;
   const activeBorrows = records.filter((r) => r.status === "ACTIVE");
-  const returnedBorrows = records.filter((r) => r.status === "RETURNED");
-  const recentRecords = records.slice(0, RECENT_LIMIT);
+  const overdueCount = records.filter((r) => r.overdue).length;
 
   return (
     <div className="mx-auto w-full max-w-[1400px] space-y-8">
@@ -108,54 +116,60 @@ export function UserDashboardContent() {
 
       {!isError && !isLoading && (
         <>
-          <DashboardGrid className="sm:grid-cols-2 lg:grid-cols-3">
+          <DashboardGrid className="sm:grid-cols-2 lg:grid-cols-4">
             <StatsCard
               title="Currently borrowed"
               value={activeBorrows.length}
-              description={
-                activeBorrows.length === 1 ? "Active loan" : "Active loans"
-              }
+              description="On this page"
               icon={BookMarked}
               iconClassName="bg-amber-500/10 [&_svg]:text-amber-600 dark:[&_svg]:text-amber-400"
               animationIndex={0}
             />
             <StatsCard
-              title="Returned"
-              value={returnedBorrows.length}
-              description="Completed loans"
-              icon={CheckCircle2}
-              iconClassName="bg-emerald-500/10 [&_svg]:text-emerald-600 dark:[&_svg]:text-emerald-400"
+              title="Overdue"
+              value={overdueCount}
+              description="Needs return"
+              icon={BookMarked}
+              iconClassName="bg-destructive/10 [&_svg]:text-destructive"
               animationIndex={1}
             />
             <StatsCard
               title="Total records"
-              value={records.length}
-              description="All time in your account"
+              value={totalElements}
+              description="All time"
               icon={Library}
               iconClassName="bg-violet-500/10 [&_svg]:text-violet-600 dark:[&_svg]:text-violet-400"
               animationIndex={2}
+            />
+            <StatsCard
+              title="Returned"
+              value={records.filter((r) => r.status === "RETURNED").length}
+              description="On this page"
+              icon={CheckCircle2}
+              iconClassName="bg-emerald-500/10 [&_svg]:text-emerald-600 dark:[&_svg]:text-emerald-400"
+              animationIndex={3}
             />
           </DashboardGrid>
 
           <section className="space-y-4">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h2 className="text-xl font-semibold tracking-tight">Recent activity</h2>
+                <h2 className="text-xl font-semibold tracking-tight">Borrow history</h2>
                 <p className="text-sm text-muted-foreground">
-                  Latest {RECENT_LIMIT} borrow records
+                  Paginated list of your loans
                 </p>
               </div>
-              {records.length > 0 && (
+              {totalElements > 0 && (
                 <Button variant="outline" size="sm" asChild className="shrink-0">
                   <Link href={ROUTES.MY_BOOKS}>
-                    View all
+                    Full history
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
               )}
             </div>
 
-            {records.length === 0 ? (
+            {totalElements === 0 ? (
               <EmptyState
                 title="No borrowed books yet"
                 description="Explore the catalog and borrow your first book."
@@ -169,11 +183,21 @@ export function UserDashboardContent() {
                 }
               />
             ) : (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {recentRecords.map((record) => (
-                  <BorrowHistoryCard key={record.borrowId} record={record} />
-                ))}
-              </div>
+              <>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {records.map((record) => (
+                    <BorrowHistoryCard key={record.borrowId} record={record} />
+                  ))}
+                </div>
+                <DataTablePagination
+                  page={page}
+                  totalPages={data?.totalPages ?? 0}
+                  totalElements={totalElements}
+                  onPageChange={setPage}
+                  disabled={isLoading}
+                  itemLabel="records"
+                />
+              </>
             )}
           </section>
         </>

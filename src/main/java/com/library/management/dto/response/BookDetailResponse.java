@@ -19,5 +19,8 @@ public class BookDetailResponse {
     private String author;
     private String category;
     private BookStatus status;
+    private String coverUrl;
     private BookBorrowInfoResponse currentBorrow;
+    private long reservationQueueSize;
+    private boolean userHasReservation;
 }

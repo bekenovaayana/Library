@@ -6,6 +6,10 @@ import com.library.management.dto.response.BorrowResponse;
 import com.library.management.entity.BookStatus;
 import com.library.management.entity.BorrowRecordStatus;
 import com.library.management.entity.Role;
+import com.library.management.entity.User;
+import com.library.management.exception.CannotChangeOwnRoleException;
+import com.library.management.exception.UserNotFoundException;
+import com.library.management.util.SecurityUtils;
 import com.library.management.mapper.AdminMapper;
 import com.library.management.mapper.BorrowMapper;
 import com.library.management.repository.BookRepository;
@@ -87,5 +91,20 @@ public class AdminServiceImpl implements AdminService {
                 .borrowedBooks(borrowedBooks)
                 .availableBooks(availableBooks)
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public AdminUserResponse updateUserRole(Long userId, Role role) {
+        User target = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+
+        String currentUsername = SecurityUtils.getCurrentUsername();
+        if (target.getUsername().equals(currentUsername)) {
+            throw new CannotChangeOwnRoleException("You cannot change your own role.");
+        }
+
+        target.setRole(role);
+        return adminMapper.toUserResponse(userRepository.save(target));
     }
 }

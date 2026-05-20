@@ -19,4 +19,5 @@ public class BookResponse {
     private String author;
     private String category;
     private BookStatus status;
+    private String coverUrl;
 }

@@ -6,6 +6,7 @@ import type {
   AdminBorrowRecordsQueryParams,
 } from "@/features/admin/monitoring/types/admin-borrow-record";
 import type { PaginatedResponse } from "@/shared/types/api";
+import type { UserRole } from "@/shared/types/auth";
 
 function buildAdminPageParams(
   params: AdminUsersQueryParams | AdminBorrowRecordsQueryParams,
@@ -43,6 +44,11 @@ export const adminApi = {
       "/admin/borrowed-books",
       { params: buildAdminPageParams(params) },
     );
+    return data;
+  },
+
+  updateUserRole: async (userId: number, role: UserRole): Promise<AdminUser> => {
+    const { data } = await apiClient.patch<AdminUser>(`/admin/users/${userId}/role`, { role });
     return data;
   },
 };

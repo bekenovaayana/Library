@@ -8,6 +8,8 @@ export interface BookBorrowInfo {
 
 export interface BookDetail extends Book {
   currentBorrow: BookBorrowInfo | null;
+  reservationQueueSize: number;
+  userHasReservation: boolean;
 }
 
 export function isBookDetail(book: Book | BookDetail): book is BookDetail {

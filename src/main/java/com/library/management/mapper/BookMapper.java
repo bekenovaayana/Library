@@ -19,10 +19,16 @@ public class BookMapper {
                 .author(book.getAuthor())
                 .category(book.getCategory())
                 .status(book.getStatus())
+                .coverUrl(book.getCoverUrl())
                 .build();
     }
 
-    public BookDetailResponse toDetailResponse(Book book, BorrowRecord activeBorrow) {
+    public BookDetailResponse toDetailResponse(
+            Book book,
+            BorrowRecord activeBorrow,
+            long reservationQueueSize,
+            boolean userHasReservation
+    ) {
         BookBorrowInfoResponse borrowInfo = null;
 
         if (activeBorrow != null) {
@@ -39,7 +45,10 @@ public class BookMapper {
                 .author(book.getAuthor())
                 .category(book.getCategory())
                 .status(book.getStatus())
+                .coverUrl(book.getCoverUrl())
                 .currentBorrow(borrowInfo)
+                .reservationQueueSize(reservationQueueSize)
+                .userHasReservation(userHasReservation)
                 .build();
     }
 
@@ -48,6 +57,7 @@ public class BookMapper {
                 .title(request.getTitle())
                 .author(request.getAuthor())
                 .category(request.getCategory())
+                .coverUrl(request.getCoverUrl())
                 .status(BookStatus.AVAILABLE)
                 .build();
     }
@@ -56,5 +66,6 @@ public class BookMapper {
         book.setTitle(request.getTitle());
         book.setAuthor(request.getAuthor());
         book.setCategory(request.getCategory());
+        book.setCoverUrl(request.getCoverUrl());
     }
 }

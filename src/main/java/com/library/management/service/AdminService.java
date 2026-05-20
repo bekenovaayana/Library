@@ -15,4 +15,6 @@ public interface AdminService {
     Page<BorrowResponse> getAllBorrowRecords(String search, BorrowRecordStatus status, Pageable pageable);
 
     AdminStatisticsResponse getStatistics();
+
+    AdminUserResponse updateUserRole(Long userId, Role role);
 }

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -17,9 +18,14 @@ import java.time.LocalDateTime;
 public class BorrowResponse {
 
     private Long borrowId;
+    private Long bookId;
     private String username;
     private String bookTitle;
+    private String coverUrl;
     private LocalDateTime borrowDate;
+    private LocalDateTime dueDate;
     private LocalDateTime returnDate;
+    private BigDecimal fineAmount;
+    private boolean overdue;
     private BorrowRecordStatus status;
 }

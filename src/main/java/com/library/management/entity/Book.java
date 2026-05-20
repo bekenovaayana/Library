@@ -39,4 +39,7 @@ public class Book {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private BookStatus status;
+
+    @Column(name = "cover_url", length = 500)
+    private String coverUrl;
 }

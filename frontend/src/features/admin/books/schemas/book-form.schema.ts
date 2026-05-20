@@ -13,6 +13,7 @@ export const bookFormSchema = z.object({
     .string()
     .min(1, "Category is required")
     .max(50, "Category must not exceed 50 characters"),
+  coverUrl: z.string().max(500).optional(),
 });
 
 export type BookFormValues = z.infer<typeof bookFormSchema>;
@@ -21,4 +22,5 @@ export const bookFormDefaultValues: BookFormValues = {
   title: "",
   author: "",
   category: "",
+  coverUrl: "",
 };

@@ -10,7 +10,9 @@ import com.library.management.exception.BookInUseException;
 import com.library.management.exception.BookNotFoundException;
 import com.library.management.mapper.BookMapper;
 import com.library.management.repository.BookRepository;
+import com.library.management.repository.BookReservationRepository;
 import com.library.management.repository.BorrowRecordRepository;
+import com.library.management.repository.UserRepository;
 import com.library.management.service.impl.BookServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,6 +42,12 @@ class BookServiceImplTest {
 
     @Mock
     private BorrowRecordRepository borrowRecordRepository;
+
+    @Mock
+    private BookReservationRepository reservationRepository;
+
+    @Mock
+    private UserRepository userRepository;
 
     @Mock
     private BookMapper bookMapper;
@@ -88,7 +96,8 @@ class BookServiceImplTest {
 
         when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
         when(borrowRecordRepository.findByBookIdAndReturnDateIsNull(1L)).thenReturn(Optional.empty());
-        when(bookMapper.toDetailResponse(book, null)).thenReturn(expected);
+        when(reservationRepository.countByBookId(1L)).thenReturn(0L);
+        when(bookMapper.toDetailResponse(book, null, 0L, false)).thenReturn(expected);
 
         BookDetailResponse result = bookService.getBookById(1L);
 
@@ -106,13 +115,13 @@ class BookServiceImplTest {
 
     @Test
     void searchBooks_whenCriteriaProvided_shouldReturnPage() {
-        BookSearchCriteria criteria = BookSearchCriteria.of("java", null, null, null);
+        BookSearchCriteria criteria = BookSearchCriteria.of("java", null, null, null, null);
         Pageable pageable = PageRequest.of(0, 10);
         Book book = Book.builder().id(1L).title("Java Basics").build();
         BookResponse response = BookResponse.builder().id(1L).title("Java Basics").build();
         Page<Book> bookPage = new PageImpl<>(List.of(book));
 
-        when(bookRepository.searchBooks(eq("java"), eq(""), eq(""), eq(null), eq(pageable)))
+        when(bookRepository.searchBooks(eq("java"), eq(""), eq(""), eq(""), eq(null), eq(pageable)))
                 .thenReturn(bookPage);
         when(bookMapper.toResponse(book)).thenReturn(response);
 

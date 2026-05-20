@@ -9,15 +9,13 @@ import { cn } from "@/shared/lib/utils";
 import type { AvailabilityFilter } from "@/features/books/types/book";
 
 interface BooksCatalogToolbarProps {
-  title: string;
-  author: string;
+  query: string;
   category: string;
   status: AvailabilityFilter;
   sort: string;
   hasActiveFilters: boolean;
   disabled?: boolean;
-  onTitleChange: (value: string) => void;
-  onAuthorChange: (value: string) => void;
+  onQueryChange: (value: string) => void;
   onCategoryChange: (value: string) => void;
   onStatusChange: (value: AvailabilityFilter) => void;
   onSortChange: (value: string) => void;
@@ -25,15 +23,13 @@ interface BooksCatalogToolbarProps {
 }
 
 export function BooksCatalogToolbar({
-  title,
-  author,
+  query,
   category,
   status,
   sort,
   hasActiveFilters,
   disabled = false,
-  onTitleChange,
-  onAuthorChange,
+  onQueryChange,
   onCategoryChange,
   onStatusChange,
   onSortChange,
@@ -46,13 +42,7 @@ export function BooksCatalogToolbar({
       className="rounded-xl border bg-card/50 p-4 shadow-sm backdrop-blur-sm md:p-5"
       aria-label="Search and filters"
     >
-      <BookSearchBar
-        title={title}
-        author={author}
-        onTitleChange={onTitleChange}
-        onAuthorChange={onAuthorChange}
-        disabled={disabled}
-      />
+      <BookSearchBar query={query} onQueryChange={onQueryChange} disabled={disabled} />
 
       <div className="mt-4 flex items-center justify-between gap-3 border-t pt-4 lg:hidden">
         <Button
@@ -78,10 +68,7 @@ export function BooksCatalogToolbar({
 
       <div
         id="books-filters-panel"
-        className={cn(
-          "mt-4 lg:mt-4",
-          filtersOpen ? "block" : "hidden lg:block",
-        )}
+        className={cn("mt-4 lg:mt-4", filtersOpen ? "block" : "hidden lg:block")}
       >
         <BookFilters
           category={category}

@@ -26,4 +26,7 @@ public class BookRequest {
     @NotBlank(message = "Category is required")
     @Size(max = 50, message = "Category must not exceed 50 characters")
     private String category;
+
+    @Size(max = 500, message = "Cover URL must not exceed 500 characters")
+    private String coverUrl;
 }

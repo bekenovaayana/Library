@@ -2,6 +2,7 @@
 
 import { Users } from "lucide-react";
 import { RoleBadge } from "@/features/admin/monitoring/components/role-badge";
+import { useUpdateUserRole } from "@/features/admin/monitoring/hooks/useUpdateUserRole";
 import { DataTableShell, SortableHeader } from "@/shared/components/data-table";
 import {
   Table,
@@ -11,8 +12,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/shared/components/table";
+import { Button } from "@/shared/ui/button";
+import { useAuthStore } from "@/store/authStore";
 import type { AdminUser } from "@/features/admin/monitoring/types/admin-user";
 import type { SortDirection } from "@/shared/components/data-table/types";
+import type { UserRole } from "@/shared/types/auth";
 
 interface UsersTableProps {
   users: AdminUser[];
@@ -22,7 +26,14 @@ interface UsersTableProps {
 }
 
 export function UsersTable({ users, isLoading, onSort, getSortDirection }: UsersTableProps) {
+  const currentUsername = useAuthStore((s) => s.user?.username);
+  const roleMutation = useUpdateUserRole();
   const isEmpty = !isLoading && users.length === 0;
+
+  const handleRoleChange = (user: AdminUser, role: UserRole) => {
+    if (user.username === currentUsername) return;
+    roleMutation.mutate({ userId: user.id, role });
+  };
 
   return (
     <DataTableShell
@@ -53,32 +64,75 @@ export function UsersTable({ users, isLoading, onSort, getSortDirection }: Users
                 />
               </TableHead>
               <TableHead>Role</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {users.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell className="font-medium">{user.username}</TableCell>
-                <TableCell className="text-muted-foreground">{user.email}</TableCell>
-                <TableCell>
-                  <RoleBadge role={user.role} />
-                </TableCell>
-              </TableRow>
-            ))}
+            {users.map((user) => {
+              const isSelf = user.username === currentUsername;
+              return (
+                <TableRow key={user.id}>
+                  <TableCell className="font-medium">{user.username}</TableCell>
+                  <TableCell className="text-muted-foreground">{user.email}</TableCell>
+                  <TableCell>
+                    <RoleBadge role={user.role} />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {isSelf ? (
+                      <span className="text-xs text-muted-foreground">You</span>
+                    ) : user.role === "USER" ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={roleMutation.isPending}
+                        onClick={() => handleRoleChange(user, "ADMIN")}
+                      >
+                        Make admin
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={roleMutation.isPending}
+                        onClick={() => handleRoleChange(user, "USER")}
+                      >
+                        Make user
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </div>
 
       <div className="divide-y sm:hidden">
-        {users.map((user) => (
-          <div key={user.id} className="space-y-1 p-4">
-            <div className="flex items-center justify-between gap-2">
-              <span className="font-medium">{user.username}</span>
-              <RoleBadge role={user.role} />
+        {users.map((user) => {
+          const isSelf = user.username === currentUsername;
+          return (
+            <div key={user.id} className="space-y-2 p-4">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-medium">{user.username}</span>
+                <RoleBadge role={user.role} />
+              </div>
+              <p className="text-sm text-muted-foreground">{user.email}</p>
+              {!isSelf && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="w-full"
+                  disabled={roleMutation.isPending}
+                  onClick={() =>
+                    handleRoleChange(user, user.role === "USER" ? "ADMIN" : "USER")
+                  }
+                >
+                  {user.role === "USER" ? "Make admin" : "Make user"}
+                </Button>
+              )}
             </div>
-            <p className="text-sm text-muted-foreground">{user.email}</p>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </DataTableShell>
   );

@@ -1,9 +1,16 @@
 import { apiClient } from "@/services/api";
-import type { BorrowBookPayload, BorrowRecord } from "@/features/borrow/types/borrow";
+import type { PaginatedResponse } from "@/shared/types/api";
+import type { BorrowBookPayload, BorrowRecord, MyBorrowsQueryParams } from "@/features/borrow/types/borrow";
 
 export const borrowApi = {
-  getMyBorrows: async (): Promise<BorrowRecord[]> => {
-    const { data } = await apiClient.get<BorrowRecord[]>("/borrow/my");
+  getMyBorrows: async (params: MyBorrowsQueryParams): Promise<PaginatedResponse<BorrowRecord>> => {
+    const { data } = await apiClient.get<PaginatedResponse<BorrowRecord>>("/borrow/my", {
+      params: {
+        page: params.page,
+        size: params.size,
+        ...(params.sort ? { sort: params.sort } : {}),
+      },
+    });
     return data;
   },
 

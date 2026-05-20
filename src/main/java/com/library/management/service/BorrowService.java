@@ -2,8 +2,8 @@ package com.library.management.service;
 
 import com.library.management.dto.request.BorrowRequest;
 import com.library.management.dto.response.BorrowResponse;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface BorrowService {
 
@@ -11,5 +11,5 @@ public interface BorrowService {
 
     BorrowResponse returnBook(Long borrowId);
 
-    List<BorrowResponse> getMyBorrows();
+    Page<BorrowResponse> getMyBorrows(Pageable pageable);
 }

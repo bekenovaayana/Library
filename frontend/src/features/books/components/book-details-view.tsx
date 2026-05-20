@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { useBookDetail } from "@/features/books/hooks/useBookDetail";
 import { BookDetailsCard } from "@/features/books/components/book-details-card";
 import { BorrowButton } from "@/features/borrow/components/borrow-button";
+import { ReserveButton } from "@/features/reservations/components/reserve-button";
 import { Button } from "@/shared/ui/button";
 import { Spinner } from "@/shared/components/spinner";
 import { ROUTES } from "@/shared/constants/routes";
@@ -36,7 +37,16 @@ export function BookDetailsView({ bookId, initialBook }: BookDetailsViewProps) {
           </Link>
         </Button>
 
-        <BorrowButton bookId={book.id} bookTitle={book.title} status={book.status} />
+        {book.status === "AVAILABLE" ? (
+          <BorrowButton bookId={book.id} bookTitle={book.title} status={book.status} />
+        ) : (
+          <ReserveButton
+            bookId={book.id}
+            bookTitle={book.title}
+            userHasReservation={book.userHasReservation}
+            queueSize={book.reservationQueueSize}
+          />
+        )}
 
         {isFetching && (
           <span className="flex items-center gap-2 text-sm text-muted-foreground">

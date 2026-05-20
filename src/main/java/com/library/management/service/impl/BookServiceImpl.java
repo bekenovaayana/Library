@@ -6,32 +6,45 @@ import com.library.management.dto.response.BookResponse;
 import com.library.management.dto.search.BookSearchCriteria;
 import com.library.management.entity.Book;
 import com.library.management.entity.BookStatus;
+import com.library.management.entity.BorrowRecord;
+import com.library.management.entity.User;
 import com.library.management.exception.BookInUseException;
 import com.library.management.exception.BookNotFoundException;
+import com.library.management.exception.UserNotFoundException;
 import com.library.management.mapper.BookMapper;
-import com.library.management.entity.BorrowRecord;
 import com.library.management.repository.BookRepository;
+import com.library.management.repository.BookReservationRepository;
 import com.library.management.repository.BorrowRecordRepository;
+import com.library.management.repository.UserRepository;
 import com.library.management.service.BookService;
+import com.library.management.util.SecurityUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final BorrowRecordRepository borrowRecordRepository;
+    private final BookReservationRepository reservationRepository;
+    private final UserRepository userRepository;
     private final BookMapper bookMapper;
 
     public BookServiceImpl(
             BookRepository bookRepository,
             BorrowRecordRepository borrowRecordRepository,
+            BookReservationRepository reservationRepository,
+            UserRepository userRepository,
             BookMapper bookMapper
     ) {
         this.bookRepository = bookRepository;
         this.borrowRecordRepository = borrowRecordRepository;
+        this.reservationRepository = reservationRepository;
+        this.userRepository = userRepository;
         this.bookMapper = bookMapper;
     }
 
@@ -48,9 +61,17 @@ public class BookServiceImpl implements BookService {
                 blankToEmpty(criteria.title()),
                 blankToEmpty(criteria.author()),
                 blankToEmpty(criteria.category()),
+                blankToEmpty(criteria.query()),
                 criteria.status(),
                 pageable
         ).map(bookMapper::toResponse);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<String> getCategories(String prefix) {
+        String normalized = prefix == null || prefix.isBlank() ? "" : prefix.trim().toLowerCase();
+        return bookRepository.findDistinctCategories(normalized);
     }
 
     private static String blankToEmpty(String value) {
@@ -64,7 +85,24 @@ public class BookServiceImpl implements BookService {
         BorrowRecord activeBorrow = borrowRecordRepository
                 .findByBookIdAndReturnDateIsNull(id)
                 .orElse(null);
-        return bookMapper.toDetailResponse(book, activeBorrow);
+
+        long queueSize = reservationRepository.countByBookId(id);
+        boolean userHasReservation = resolveUserHasReservation(id);
+
+        return bookMapper.toDetailResponse(book, activeBorrow, queueSize, userHasReservation);
+    }
+
+    private boolean resolveUserHasReservation(Long bookId) {
+        try {
+            String username = SecurityUtils.getCurrentUsername();
+            User user = userRepository.findByUsername(username).orElse(null);
+            if (user == null) {
+                return false;
+            }
+            return reservationRepository.existsByUserIdAndBookId(user.getId(), bookId);
+        } catch (IllegalStateException ex) {
+            return false;
+        }
     }
 
     @Override
