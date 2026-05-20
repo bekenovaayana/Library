@@ -65,15 +65,13 @@ public interface BorrowRecordRepository extends JpaRepository<BorrowRecord, Long
             SELECT br FROM BorrowRecord br
             JOIN br.user u
             JOIN br.book b
-            WHERE (:search = ''
-                   OR LOWER(u.username) LIKE LOWER(CONCAT('%', :search, '%'))
-                   OR LOWER(b.title) LIKE LOWER(CONCAT('%', :search, '%')))
+            WHERE (LOWER(u.username) LIKE :searchPattern OR LOWER(b.title) LIKE :searchPattern)
               AND (:activeOnly IS NULL
                    OR (:activeOnly = TRUE AND br.returnDate IS NULL)
                    OR (:activeOnly = FALSE AND br.returnDate IS NOT NULL))
             """)
     Page<BorrowRecord> findAllFiltered(
-            @Param("search") String search,
+            @Param("searchPattern") String searchPattern,
             @Param("activeOnly") Boolean activeOnly,
             Pageable pageable
     );

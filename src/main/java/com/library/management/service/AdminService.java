@@ -2,6 +2,7 @@ package com.library.management.service;
 
 import com.library.management.dto.response.AdminStatisticsResponse;
 import com.library.management.dto.response.AdminUserResponse;
+import com.library.management.dto.response.BookAuditResponse;
 import com.library.management.dto.response.BorrowResponse;
 import com.library.management.entity.BorrowRecordStatus;
 import com.library.management.entity.Role;
@@ -17,4 +18,6 @@ public interface AdminService {
     AdminStatisticsResponse getStatistics();
 
     AdminUserResponse updateUserRole(Long userId, Role role);
+
+    Page<BookAuditResponse> getBookAuditLog(Pageable pageable);
 }

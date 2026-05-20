@@ -7,6 +7,8 @@ import com.library.management.dto.response.BookResponse;
 import com.library.management.dto.search.BookSearchCriteria;
 import com.library.management.entity.BookStatus;
 import com.library.management.service.BookService;
+import com.library.management.web.BookSortFields;
+import com.library.management.web.PageableSupport;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -55,6 +57,7 @@ public class BookController {
     public ResponseEntity<Page<BookResponse>> getAllBooks(
             @PageableDefault(size = 10, sort = "title", direction = Sort.Direction.ASC) Pageable pageable
     ) {
+        PageableSupport.validate(pageable, BookSortFields.ALLOWED);
         return ResponseEntity.ok(bookService.getAllBooks(pageable));
     }
 
@@ -73,6 +76,7 @@ public class BookController {
             @RequestParam(required = false) BookStatus status,
             @PageableDefault(size = 10, sort = "title", direction = Sort.Direction.ASC) Pageable pageable
     ) {
+        PageableSupport.validate(pageable, BookSortFields.ALLOWED);
         BookSearchCriteria criteria = BookSearchCriteria.of(title, author, category, q, status);
         return ResponseEntity.ok(bookService.searchBooks(criteria, pageable));
     }

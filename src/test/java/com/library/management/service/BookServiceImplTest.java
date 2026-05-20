@@ -9,15 +9,18 @@ import com.library.management.entity.BookStatus;
 import com.library.management.exception.BookInUseException;
 import com.library.management.exception.BookNotFoundException;
 import com.library.management.mapper.BookMapper;
+import com.library.management.repository.BookAuditLogRepository;
 import com.library.management.repository.BookRepository;
 import com.library.management.repository.BookReservationRepository;
 import com.library.management.repository.BorrowRecordRepository;
 import com.library.management.repository.UserRepository;
 import com.library.management.service.impl.BookServiceImpl;
+import com.library.management.util.SecurityUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -31,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -51,6 +55,9 @@ class BookServiceImplTest {
 
     @Mock
     private BookMapper bookMapper;
+
+    @Mock
+    private BookAuditLogRepository bookAuditLogRepository;
 
     @InjectMocks
     private BookServiceImpl bookService;
@@ -83,10 +90,13 @@ class BookServiceImplTest {
         when(bookRepository.save(book)).thenReturn(book);
         when(bookMapper.toResponse(book)).thenReturn(expected);
 
-        BookResponse result = bookService.createBook(request);
-
-        assertThat(result.getTitle()).isEqualTo("Clean Code");
-        assertThat(result.getStatus()).isEqualTo(BookStatus.AVAILABLE);
+        try (MockedStatic<SecurityUtils> security = mockStatic(SecurityUtils.class)) {
+            security.when(SecurityUtils::getCurrentUsername).thenReturn("admin");
+            BookResponse result = bookService.createBook(request);
+            assertThat(result.getTitle()).isEqualTo("Clean Code");
+            assertThat(result.getStatus()).isEqualTo(BookStatus.AVAILABLE);
+            verify(bookAuditLogRepository).save(any());
+        }
     }
 
     @Test
@@ -121,7 +131,7 @@ class BookServiceImplTest {
         BookResponse response = BookResponse.builder().id(1L).title("Java Basics").build();
         Page<Book> bookPage = new PageImpl<>(List.of(book));
 
-        when(bookRepository.searchBooks(eq("java"), eq(""), eq(""), eq(""), eq(null), eq(pageable)))
+        when(bookRepository.searchBooks(eq("%java%"), eq("%"), eq("%"), eq("%"), eq(null), eq(pageable)))
                 .thenReturn(bookPage);
         when(bookMapper.toResponse(book)).thenReturn(response);
 
@@ -145,9 +155,12 @@ class BookServiceImplTest {
         Book book = Book.builder().id(1L).status(BookStatus.AVAILABLE).build();
         when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
 
-        bookService.deleteBook(1L);
-
-        verify(bookRepository).delete(book);
+        try (MockedStatic<SecurityUtils> security = mockStatic(SecurityUtils.class)) {
+            security.when(SecurityUtils::getCurrentUsername).thenReturn("admin");
+            bookService.deleteBook(1L);
+            verify(bookAuditLogRepository).save(any());
+            verify(bookRepository).delete(book);
+        }
     }
 
     @Test

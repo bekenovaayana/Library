@@ -5,6 +5,8 @@ import com.library.management.dto.response.BookDetailResponse;
 import com.library.management.dto.response.BookResponse;
 import com.library.management.dto.search.BookSearchCriteria;
 import com.library.management.entity.Book;
+import com.library.management.entity.BookAuditAction;
+import com.library.management.entity.BookAuditLog;
 import com.library.management.entity.BookStatus;
 import com.library.management.entity.BorrowRecord;
 import com.library.management.entity.User;
@@ -17,6 +19,8 @@ import com.library.management.repository.BookReservationRepository;
 import com.library.management.repository.BorrowRecordRepository;
 import com.library.management.repository.UserRepository;
 import com.library.management.service.BookService;
+import com.library.management.repository.BookAuditLogRepository;
+import com.library.management.util.SearchUtils;
 import com.library.management.util.SecurityUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,19 +37,22 @@ public class BookServiceImpl implements BookService {
     private final BookReservationRepository reservationRepository;
     private final UserRepository userRepository;
     private final BookMapper bookMapper;
+    private final BookAuditLogRepository bookAuditLogRepository;
 
     public BookServiceImpl(
             BookRepository bookRepository,
             BorrowRecordRepository borrowRecordRepository,
             BookReservationRepository reservationRepository,
             UserRepository userRepository,
-            BookMapper bookMapper
+            BookMapper bookMapper,
+            BookAuditLogRepository bookAuditLogRepository
     ) {
         this.bookRepository = bookRepository;
         this.borrowRecordRepository = borrowRecordRepository;
         this.reservationRepository = reservationRepository;
         this.userRepository = userRepository;
         this.bookMapper = bookMapper;
+        this.bookAuditLogRepository = bookAuditLogRepository;
     }
 
     @Override
@@ -58,10 +65,10 @@ public class BookServiceImpl implements BookService {
     @Transactional(readOnly = true)
     public Page<BookResponse> searchBooks(BookSearchCriteria criteria, Pageable pageable) {
         return bookRepository.searchBooks(
-                blankToEmpty(criteria.title()),
-                blankToEmpty(criteria.author()),
-                blankToEmpty(criteria.category()),
-                blankToEmpty(criteria.query()),
+                SearchUtils.likePattern(criteria.title()),
+                SearchUtils.likePattern(criteria.author()),
+                SearchUtils.likePattern(criteria.category()),
+                SearchUtils.likePattern(criteria.query()),
                 criteria.status(),
                 pageable
         ).map(bookMapper::toResponse);
@@ -70,12 +77,7 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional(readOnly = true)
     public List<String> getCategories(String prefix) {
-        String normalized = prefix == null || prefix.isBlank() ? "" : prefix.trim().toLowerCase();
-        return bookRepository.findDistinctCategories(normalized);
-    }
-
-    private static String blankToEmpty(String value) {
-        return value == null || value.isBlank() ? "" : value;
+        return bookRepository.findDistinctCategories(SearchUtils.prefixPattern(prefix));
     }
 
     @Override
@@ -108,8 +110,11 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public BookResponse createBook(BookRequest request) {
+        String actor = SecurityUtils.getCurrentUsername();
         Book book = bookMapper.toEntity(request);
+        book.setCreatedBy(actor);
         Book savedBook = bookRepository.save(book);
+        recordAudit(savedBook, BookAuditAction.CREATED, actor);
         return bookMapper.toResponse(savedBook);
     }
 
@@ -130,7 +135,19 @@ public class BookServiceImpl implements BookService {
             throw new BookInUseException(id);
         }
 
+        String actor = SecurityUtils.getCurrentUsername();
+        recordAudit(book, BookAuditAction.DELETED, actor);
         bookRepository.delete(book);
+    }
+
+    private void recordAudit(Book book, BookAuditAction action, String actor) {
+        bookAuditLogRepository.save(BookAuditLog.builder()
+                .bookId(book.getId())
+                .title(book.getTitle())
+                .action(action)
+                .performedBy(actor)
+                .performedAt(java.time.LocalDateTime.now())
+                .build());
     }
 
     private Book findBookOrThrow(Long id) {

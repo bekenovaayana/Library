@@ -105,8 +105,8 @@ class BookIntegrationTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
-    void createBook_whenAdmin_shouldReturnCreated() throws Exception {
+    @WithMockUser(username = "admin", roles = "ADMIN")
+    void createBook_whenAdmin_shouldReturnCreatedWithAudit() throws Exception {
         // Arrange
         BookRequest request = BookRequest.builder()
                 .title("Clean Code")
@@ -120,7 +120,8 @@ class BookIntegrationTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.title").value("Clean Code"))
-                .andExpect(jsonPath("$.status").value("AVAILABLE"));
+                .andExpect(jsonPath("$.status").value("AVAILABLE"))
+                .andExpect(jsonPath("$.createdBy").value("admin"));
     }
 
     @Test

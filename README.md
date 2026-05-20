@@ -397,10 +397,14 @@ GitHub Actions workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) r
 
 | Job | Steps |
 |-----|--------|
-| **backend** | `mvn test` + `mvn package -DskipTests` |
+| **backend** | H2 unit/integration tests + `mvn package -DskipTests` |
+| **backend-postgres** | Testcontainers PostgreSQL (search, pagination, filters) |
+| **openapi** | Exports `target/openapi/openapi.json` (prod keeps Swagger off) |
 | **frontend** | `npm ci` → lint → typecheck → `npm test` → `npm run build` |
 
 Docker image builds still skip tests via the `docker` Maven profile (fast images); CI validates tests separately.
+
+See [docs/OPERATIONS.md](docs/OPERATIONS.md) for staging, backups, Prometheus, nginx, and health checks.
 
 ## Docker Services
 
@@ -408,8 +412,10 @@ Docker image builds still skip tests via the `docker` Maven profile (fast images
 |---------|---------------|------|
 | `postgres` | postgres:16-alpine | 5432 (internal) |
 | `app` | Dockerfile | 8080 |
+| `frontend` | `frontend/Dockerfile` | 3000 |
+| `postgres-backup` | prodrigestivill/postgres-backup-local | — (`--profile backup`) |
 
-The application waits for PostgreSQL to become healthy before starting.
+The application waits for PostgreSQL to become healthy before starting. Frontend health: `GET /api/health`.
 
 ## Security Notes
 

@@ -18,27 +18,27 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Query("""
             SELECT b FROM Book b
-            WHERE (:title = '' OR LOWER(b.title) LIKE LOWER(CONCAT('%', :title, '%')))
-              AND (:author = '' OR LOWER(b.author) LIKE LOWER(CONCAT('%', :author, '%')))
-              AND (:category = '' OR LOWER(b.category) LIKE LOWER(CONCAT('%', :category, '%')))
-              AND (:query = '' OR LOWER(b.title) LIKE LOWER(CONCAT('%', :query, '%'))
-                   OR LOWER(b.author) LIKE LOWER(CONCAT('%', :query, '%'))
-                   OR LOWER(b.category) LIKE LOWER(CONCAT('%', :query, '%')))
+            WHERE LOWER(b.title) LIKE :titlePattern
+              AND LOWER(b.author) LIKE :authorPattern
+              AND LOWER(b.category) LIKE :categoryPattern
+              AND (LOWER(b.title) LIKE :queryPattern
+                   OR LOWER(b.author) LIKE :queryPattern
+                   OR LOWER(b.category) LIKE :queryPattern)
               AND (:status IS NULL OR b.status = :status)
             """)
     Page<Book> searchBooks(
-            @Param("title") String title,
-            @Param("author") String author,
-            @Param("category") String category,
-            @Param("query") String query,
+            @Param("titlePattern") String titlePattern,
+            @Param("authorPattern") String authorPattern,
+            @Param("categoryPattern") String categoryPattern,
+            @Param("queryPattern") String queryPattern,
             @Param("status") BookStatus status,
             Pageable pageable
     );
 
     @Query("""
             SELECT DISTINCT b.category FROM Book b
-            WHERE (:prefix = '' OR LOWER(b.category) LIKE LOWER(CONCAT(:prefix, '%')))
+            WHERE LOWER(b.category) LIKE :prefixPattern
             ORDER BY b.category ASC
             """)
-    List<String> findDistinctCategories(@Param("prefix") String prefix);
+    List<String> findDistinctCategories(@Param("prefixPattern") String prefixPattern);
 }

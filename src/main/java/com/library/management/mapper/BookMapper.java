@@ -20,6 +20,7 @@ public class BookMapper {
                 .category(book.getCategory())
                 .status(book.getStatus())
                 .coverUrl(book.getCoverUrl())
+                .createdBy(book.getCreatedBy())
                 .build();
     }
 

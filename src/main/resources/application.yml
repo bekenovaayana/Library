@@ -42,8 +42,11 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,prometheus
       base-path: /actuator
+  metrics:
+    tags:
+      application: ${spring.application.name}
   endpoint:
     health:
       probes:

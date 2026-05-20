@@ -9,6 +9,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,6 +26,14 @@ public class GlobalExceptionHandler {
 
     public GlobalExceptionHandler(ErrorResponseFactory errorResponseFactory) {
         this.errorResponseFactory = errorResponseFactory;
+    }
+
+    @ExceptionHandler({InvalidPageableException.class, PropertyReferenceException.class})
+    public ResponseEntity<ErrorResponse> handleInvalidPageable(
+            RuntimeException ex,
+            HttpServletRequest request
+    ) {
+        return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -24,13 +24,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("""
             SELECT u FROM User u
-            WHERE (:search = ''
-                   OR LOWER(u.username) LIKE LOWER(CONCAT('%', :search, '%'))
-                   OR LOWER(u.email) LIKE LOWER(CONCAT('%', :search, '%')))
+            WHERE (LOWER(u.username) LIKE :searchPattern OR LOWER(u.email) LIKE :searchPattern)
               AND (:role IS NULL OR u.role = :role)
             """)
     Page<User> findAllFiltered(
-            @Param("search") String search,
+            @Param("searchPattern") String searchPattern,
             @Param("role") Role role,
             Pageable pageable
     );

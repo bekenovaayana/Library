@@ -15,10 +15,17 @@
         </root>
     </springProfile>
 
-    <springProfile name="prod">
+    <springProfile name="prod,staging">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-                <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} level=%level logger=%logger{36} msg="%msg"%n</pattern>
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <includeMdcKeyName>correlationId</includeMdcKeyName>
+                <fieldNames>
+                    <timestamp>@timestamp</timestamp>
+                    <message>message</message>
+                    <logger>logger</logger>
+                    <thread>thread</thread>
+                    <level>level</level>
+                </fieldNames>
             </encoder>
         </appender>
         <root level="INFO">

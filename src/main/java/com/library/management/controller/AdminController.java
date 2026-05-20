@@ -3,6 +3,7 @@ package com.library.management.controller;
 import com.library.management.config.OpenApiConfig;
 import com.library.management.dto.response.AdminStatisticsResponse;
 import com.library.management.dto.response.AdminUserResponse;
+import com.library.management.dto.response.BookAuditResponse;
 import com.library.management.dto.response.BorrowResponse;
 import com.library.management.entity.BorrowRecordStatus;
 import com.library.management.entity.Role;
@@ -60,6 +61,14 @@ public class AdminController {
             @PageableDefault(size = 10, sort = "borrowDate", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         return ResponseEntity.ok(adminService.getAllBorrowRecords(search, status, pageable));
+    }
+
+    @GetMapping("/books/audit")
+    @Operation(summary = "Book audit log", description = "Who created or deleted books")
+    public ResponseEntity<Page<BookAuditResponse>> getBookAuditLog(
+            @PageableDefault(size = 20, sort = "performedAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return ResponseEntity.ok(adminService.getBookAuditLog(pageable));
     }
 
     @GetMapping("/statistics")
