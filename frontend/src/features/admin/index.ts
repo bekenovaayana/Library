@@ -1,0 +1,11 @@
+export { adminApi } from "./api/adminApi";
+export { adminKeys } from "./hooks/query-keys";
+export { useAdminStatistics } from "./hooks/useAdminStatistics";
+export { AdminDashboardContent } from "./components/admin-dashboard-content";
+export { AdminLayout } from "./components/admin-layout";
+export { AdminHeader } from "./components/admin-header";
+export { AdminSidebar } from "./components/admin-sidebar";
+export type { AdminStatistics } from "./types/admin-statistics";
+export { AdminBooksPageContent } from "./books/components/admin-books-page-content";
+export { AdminUsersPageContent } from "./monitoring/components/admin-users-page-content";
+export { AdminBorrowedBooksPageContent } from "./monitoring/components/admin-borrowed-books-page-content";

@@ -1,0 +1,33 @@
+import { APIErrorHandler } from "@/shared/ux/api/api-error-handler";
+import { FallbackUI } from "@/shared/ux/components/fallback-ui";
+
+interface ErrorStateProps {
+  title?: string;
+  message?: string;
+  error?: unknown;
+  onRetry?: () => void;
+  retryLabel?: string;
+  className?: string;
+}
+
+export function ErrorState({
+  title,
+  message,
+  error,
+  onRetry,
+  retryLabel = "Try again",
+  className,
+}: ErrorStateProps) {
+  const parsed = error ? APIErrorHandler.parse(error) : null;
+
+  return (
+    <FallbackUI
+      title={title}
+      message={message ?? parsed?.message ?? "An unexpected error occurred. Please try again."}
+      kind={parsed?.kind ?? "unknown"}
+      onRetry={onRetry}
+      retryLabel={retryLabel}
+      className={className}
+    />
+  );
+}

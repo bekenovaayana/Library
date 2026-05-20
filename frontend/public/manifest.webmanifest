@@ -1,0 +1,18 @@
+{
+  "name": "Library Management System",
+  "short_name": "Library",
+  "description": "Browse, borrow, and manage library books",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#18181b",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

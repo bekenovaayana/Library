@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Library Management System">
+  <rect width="1200" height="630" fill="#09090b"/>
+  <text x="80" y="280" fill="#fafafa" font-family="system-ui,sans-serif" font-size="64" font-weight="700">Library Management</text>
+  <text x="80" y="360" fill="#a1a1aa" font-family="system-ui,sans-serif" font-size="32">Browse · Borrow · Manage</text>
+</svg>
