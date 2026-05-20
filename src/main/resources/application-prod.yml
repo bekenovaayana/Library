@@ -19,6 +19,10 @@ springdoc:
     enabled: false
 
 application:
+  library:
+    admin-seed:
+      # Set LIBRARY_SEED_ADMIN=false in production after the first admin is configured.
+      enabled: ${LIBRARY_SEED_ADMIN:true}
   security:
     jwt:
       secret-key: ${JWT_SECRET}

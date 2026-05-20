@@ -336,12 +336,26 @@ GET /api/books
 Authorization: Bearer <token>
 ```
 
-### 4. Admin access
+### 4. Admin access (manage books)
 
-Promote a user to admin in the database:
+On startup the API ensures a **library manager** account exists (see `LIBRARY_ADMIN_*` in `.env.example`):
+
+| Field | Default |
+|-------|---------|
+| Email | `admin@gmail.com` |
+| Password | `Admin12345` |
+| Username | `admin` |
+
+1. Sign in with the manager account (defaults in root `.env.example`: `LIBRARY_ADMIN_EMAIL` / `LIBRARY_ADMIN_PASSWORD`).
+2. You are redirected to **http://localhost:3000/admin**.
+3. Open **Books** in the admin sidebar to add, edit, or remove titles.
+
+If you registered earlier as `admin` but still see role **USER**, restart the backend (`docker compose restart app`); the app promotes that account to **ADMIN**. Then **sign out and sign in again**.
+
+Manual SQL (optional):
 
 ```sql
-UPDATE users SET role = 'ADMIN' WHERE email = 'admin@example.com';
+UPDATE users SET role = 'ADMIN' WHERE email = 'admin@gmail.com';
 ```
 
 ## Error Response Format

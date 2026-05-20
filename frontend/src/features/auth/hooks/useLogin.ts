@@ -21,10 +21,11 @@ export function useLogin() {
       toast.success(`Welcome back, ${data.username}!`);
 
       const redirect = searchParams.get("redirect");
+      const defaultHome = data.role === "ADMIN" ? ROUTES.ADMIN : ROUTES.DASHBOARD;
       const destination =
         redirect && redirect.startsWith("/") && !redirect.startsWith("//")
           ? redirect
-          : ROUTES.DASHBOARD;
+          : defaultHome;
 
       router.push(destination);
       router.refresh();

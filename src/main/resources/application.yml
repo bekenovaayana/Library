@@ -78,6 +78,11 @@ application:
     max-fine: ${LIBRARY_MAX_FINE:50.00}
     reminder-days-before-due: ${LIBRARY_REMINDER_DAYS:2}
     notifications-enabled: ${LIBRARY_NOTIFICATIONS_ENABLED:true}
+    admin-seed:
+      enabled: ${LIBRARY_SEED_ADMIN:true}
+      username: ${LIBRARY_ADMIN_USERNAME:admin}
+      email: ${LIBRARY_ADMIN_EMAIL:admin@gmail.com}
+      password: ${LIBRARY_ADMIN_PASSWORD:Admin12345}
   security:
     jwt:
       secret-key: ${JWT_SECRET:library-management-jwt-secret-key-min-32-chars}

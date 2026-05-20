@@ -18,7 +18,8 @@ export function useRegister() {
     onSuccess: (data) => {
       setAuth({ username: data.username, role: data.role }, data.token, data.refreshToken);
       toast.success("Account created successfully!");
-      router.push(ROUTES.DASHBOARD);
+      const home = data.role === "ADMIN" ? ROUTES.ADMIN : ROUTES.DASHBOARD;
+      router.push(home);
       router.refresh();
     },
     onError: (error) => {

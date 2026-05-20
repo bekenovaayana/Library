@@ -17,4 +17,15 @@ public class LibraryProperties {
     private BigDecimal maxFine = new BigDecimal("50.00");
     private int reminderDaysBeforeDue = 2;
     private boolean notificationsEnabled = true;
+    private AdminSeed adminSeed = new AdminSeed();
+
+    @Getter
+    @Setter
+    public static class AdminSeed {
+        /** Create or ensure a default library manager account on startup. */
+        private boolean enabled = true;
+        private String username = "admin";
+        private String email = "admin@gmail.com";
+        private String password = "Admin12345";
+    }
 }
