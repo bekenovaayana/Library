@@ -8,6 +8,7 @@ import com.library.management.entity.Book;
 import com.library.management.entity.BookStatus;
 import com.library.management.exception.BookInUseException;
 import com.library.management.exception.BookNotFoundException;
+import com.library.management.config.LibraryProperties;
 import com.library.management.mapper.BookMapper;
 import com.library.management.repository.BookAuditLogRepository;
 import com.library.management.repository.BookRepository;
@@ -58,6 +59,9 @@ class BookServiceImplTest {
 
     @Mock
     private BookAuditLogRepository bookAuditLogRepository;
+
+    @Mock
+    private LibraryProperties libraryProperties;
 
     @InjectMocks
     private BookServiceImpl bookService;

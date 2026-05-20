@@ -10,7 +10,17 @@ import { refreshAccessToken } from "@/services/api/refreshAccessToken";
 
 export { isApiError } from "@/services/api/errors";
 
-type RetryableRequestConfig = InternalAxiosRequestConfig & { _retry?: boolean };
+type RetryableRequestConfig = InternalAxiosRequestConfig & {
+  _retry?: boolean;
+  silentError?: boolean;
+};
+
+function isSilentErrorRequest(config: RetryableRequestConfig | undefined): boolean {
+  if (!config) return false;
+  if (config.silentError) return true;
+  const url = config.url ?? "";
+  return url.includes("/library/policy");
+}
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -85,7 +95,11 @@ apiClient.interceptors.response.use(
 
     const parsed = APIErrorHandler.parse(apiError);
 
-    if (APIErrorHandler.shouldShowGlobalToast(parsed) && !isAuthEndpoint) {
+    if (
+      APIErrorHandler.shouldShowGlobalToast(parsed) &&
+      !isAuthEndpoint &&
+      !isSilentErrorRequest(originalRequest)
+    ) {
       APIErrorHandler.handle(apiError, { toast: true, silent: parsed.kind === "unauthorized" });
     }
 

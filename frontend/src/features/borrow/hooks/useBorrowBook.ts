@@ -9,6 +9,8 @@ import { BOOKS_QUERY_KEY } from "@/features/books/hooks/useBooks";
 import { bookKeys } from "@/features/books/hooks/book-keys";
 import type { BookDetail } from "@/features/books/types/book-detail";
 import type { BorrowRecord } from "@/features/borrow/types/borrow";
+import { formatBorrowDate } from "@/features/borrow/utils/format-date";
+import { formatMoney } from "@/features/borrow/utils/format-money";
 import { getApiErrorMessage } from "@/services/api/apiClient";
 import { useAuthStore } from "@/store/authStore";
 
@@ -46,7 +48,14 @@ export function useBorrowBook() {
       };
     },
     onSuccess: (data, { bookId }) => {
-      toast.success(`Successfully borrowed "${data.bookTitle}"`);
+      const dueText = data.dueDate ? formatBorrowDate(data.dueDate) : "";
+      const detail = queryClient.getQueryData<BookDetail>(bookKeys.detail(bookId));
+      const finePerDay = detail?.finePerDay ?? 0;
+      const maxFine = detail?.maxFine ?? 0;
+      toast.success(
+        `Borrowed "${data.bookTitle}". Return by ${dueText}. Late fee: ${formatMoney(finePerDay)}/day (max ${formatMoney(maxFine)}).`,
+        { duration: 6000 },
+      );
       void queryClient.invalidateQueries({ queryKey: borrowKeys.my() });
       void queryClient.invalidateQueries({ queryKey: [BOOKS_QUERY_KEY] });
       void queryClient.invalidateQueries({ queryKey: bookKeys.detail(bookId) });

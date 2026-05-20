@@ -6,17 +6,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BookBorrowInfoResponse {
+public class LibraryPolicyResponse {
 
-    private Long borrowId;
-    private String username;
-    private LocalDateTime borrowDate;
-    private LocalDateTime dueDate;
+    private int borrowDays;
+    private BigDecimal finePerDay;
+    private BigDecimal maxFine;
 }

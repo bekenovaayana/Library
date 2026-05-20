@@ -21,4 +21,6 @@ public class BookResponse {
     private BookStatus status;
     private String coverUrl;
     private String createdBy;
+    private boolean userHasReservation;
+    private long reservationQueueSize;
 }

@@ -107,7 +107,8 @@ export class APIErrorHandler {
       parsed.kind === "offline" ||
       parsed.kind === "network" ||
       parsed.kind === "timeout" ||
-      parsed.kind === "server"
+      parsed.kind === "server" ||
+      (parsed.kind === "unknown" && (parsed.status === undefined || parsed.status >= 500))
     );
   }
 

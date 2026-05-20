@@ -1,6 +1,9 @@
-import { BookOpen, Calendar, Hash, Tag, User } from "lucide-react";
+import { BookOpen, Calendar, CircleDollarSign, Hash, Tag, User } from "lucide-react";
 import type { BookDetail } from "@/features/books/types/book-detail";
 import { BookStatusBadge } from "@/features/books/components/book-status-badge";
+import { LendingTermsSummary } from "@/features/borrow/components/lending-terms-summary";
+import { formatBorrowDate } from "@/features/borrow/utils/format-date";
+import { formatMoney } from "@/features/borrow/utils/format-money";
 
 interface BookInfoProps {
   book: BookDetail;
@@ -71,9 +74,23 @@ export function BookInfo({ book }: BookInfoProps) {
                 <dd className="font-medium">{formatDate(book.currentBorrow.borrowDate)}</dd>
               </div>
             </div>
-            <div>
-              <dt className="text-sm text-muted-foreground">Borrow record ID</dt>
-              <dd className="font-medium">#{book.currentBorrow.borrowId}</dd>
+            {book.currentBorrow.dueDate && (
+              <div className="flex items-start gap-2">
+                <Calendar className="mt-0.5 h-4 w-4 text-primary" />
+                <div>
+                  <dt className="text-sm text-muted-foreground">Return by</dt>
+                  <dd className="font-medium">{formatBorrowDate(book.currentBorrow.dueDate)}</dd>
+                </div>
+              </div>
+            )}
+            <div className="flex items-start gap-2">
+              <CircleDollarSign className="mt-0.5 h-4 w-4 text-muted-foreground" />
+              <div>
+                <dt className="text-sm text-muted-foreground">Late fee</dt>
+                <dd className="font-medium">
+                  {formatMoney(book.finePerDay)}/day (max {formatMoney(book.maxFine)})
+                </dd>
+              </div>
             </div>
             <div className="sm:col-span-2">
               <p className="text-sm text-amber-700 dark:text-amber-400">
@@ -82,10 +99,19 @@ export function BookInfo({ book }: BookInfoProps) {
             </div>
           </dl>
         ) : (
-          <p className="mt-3 text-sm text-muted-foreground">
-            No active borrow record. This book is available in the library catalog and ready
-            to be borrowed.
-          </p>
+          <div className="mt-4 space-y-4">
+            <LendingTermsSummary
+              terms={{
+                borrowDays: book.borrowDays ?? 14,
+                finePerDay: book.finePerDay ?? 1,
+                maxFine: book.maxFine ?? 50,
+                estimatedDueDate: book.estimatedDueDate,
+              }}
+            />
+            <p className="text-sm text-muted-foreground">
+              Borrow this book to add it to your account. Terms above apply to your loan.
+            </p>
+          </div>
         )}
       </section>
     </div>

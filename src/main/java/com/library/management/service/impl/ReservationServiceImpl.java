@@ -61,7 +61,14 @@ public class ReservationServiceImpl implements ReservationService {
                 .build());
 
         int position = resolveQueuePosition(bookId, saved.getId());
-        return toResponse(saved, position);
+        return ReservationResponse.builder()
+                .id(saved.getId())
+                .bookId(bookId)
+                .bookTitle(book.getTitle())
+                .coverUrl(book.getCoverUrl())
+                .queuePosition(position)
+                .createdAt(saved.getCreatedAt())
+                .build();
     }
 
     @Override

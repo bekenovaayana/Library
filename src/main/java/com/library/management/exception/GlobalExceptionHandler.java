@@ -9,7 +9,9 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.hibernate.LazyInitializationException;
 import org.springframework.data.mapping.PropertyReferenceException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,6 +28,15 @@ public class GlobalExceptionHandler {
 
     public GlobalExceptionHandler(ErrorResponseFactory errorResponseFactory) {
         this.errorResponseFactory = errorResponseFactory;
+    }
+
+    @ExceptionHandler(LazyInitializationException.class)
+    public ResponseEntity<ErrorResponse> handleLazyInitialization(
+            LazyInitializationException ex,
+            HttpServletRequest request
+    ) {
+        log.error("LazyInitializationException at {}: {}", request.getRequestURI(), ex.getMessage(), ex);
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Data loading error", request);
     }
 
     @ExceptionHandler({InvalidPageableException.class, PropertyReferenceException.class})
@@ -50,9 +61,9 @@ public class GlobalExceptionHandler {
                 .body(errorResponseFactory.validationFailed(request, violations));
     }
 
-    @ExceptionHandler(ResourceNotFoundException.class)
+    @ExceptionHandler({ResourceNotFoundException.class, NoResourceFoundException.class})
     public ResponseEntity<ErrorResponse> handleResourceNotFound(
-            ResourceNotFoundException ex,
+            RuntimeException ex,
             HttpServletRequest request
     ) {
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), request);

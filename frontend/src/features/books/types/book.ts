@@ -13,6 +13,8 @@ export interface Book {
   category: string;
   status: BookStatus;
   coverUrl?: string | null;
+  userHasReservation?: boolean;
+  reservationQueueSize?: number;
 }
 
 export interface BookPayload {

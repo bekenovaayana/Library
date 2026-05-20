@@ -37,6 +37,7 @@ public class BookMapper {
                     .borrowId(activeBorrow.getId())
                     .username(activeBorrow.getUser().getUsername())
                     .borrowDate(activeBorrow.getBorrowDate())
+                    .dueDate(activeBorrow.getDueDate())
                     .build();
         }
 

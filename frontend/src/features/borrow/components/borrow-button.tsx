@@ -7,11 +7,16 @@ import { Modal } from "@/shared/components/modal";
 import { Button } from "@/shared/ui/button";
 import { Spinner } from "@/shared/components/spinner";
 import type { BookStatus } from "@/features/books/types/book";
+import {
+  LendingTermsSummary,
+  type LendingTerms,
+} from "@/features/borrow/components/lending-terms-summary";
 
 interface BorrowButtonProps {
   bookId: number;
   bookTitle: string;
   status: BookStatus;
+  lendingTerms: LendingTerms;
   className?: string;
   size?: "default" | "sm" | "lg" | "icon";
 }
@@ -20,6 +25,7 @@ export function BorrowButton({
   bookId,
   bookTitle,
   status,
+  lendingTerms,
   className,
   size = "default",
 }: BorrowButtonProps) {
@@ -83,9 +89,12 @@ export function BorrowButton({
           </>
         }
       >
-        <p className="text-sm text-muted-foreground">
-          The book will be marked as borrowed and added to your account until you return it.
-        </p>
+        <div className="space-y-4">
+          <LendingTermsSummary terms={lendingTerms} />
+          <p className="text-sm text-muted-foreground">
+            The book will be added to your account. Return it by the due date to avoid late fees.
+          </p>
+        </div>
       </Modal>
     </>
   );

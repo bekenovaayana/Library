@@ -11,6 +11,7 @@ import { useResetPassword } from "@/features/auth/hooks/useResetPassword";
 import { FormField } from "@/features/auth/components/form-field";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
+import { PasswordInput } from "@/shared/ui/password-input";
 import { Spinner } from "@/shared/components/spinner";
 import { ROUTES } from "@/shared/constants/routes";
 
@@ -49,9 +50,8 @@ export function ResetPasswordForm({ initialToken = "" }: ResetPasswordFormProps)
         </FormField>
 
         <FormField label="New password" htmlFor="newPassword" error={errors.newPassword?.message}>
-          <Input
+          <PasswordInput
             id="newPassword"
-            type="password"
             placeholder="••••••••"
             autoComplete="new-password"
             disabled={mutation.isPending}
@@ -65,9 +65,8 @@ export function ResetPasswordForm({ initialToken = "" }: ResetPasswordFormProps)
           htmlFor="confirmPassword"
           error={errors.confirmPassword?.message}
         >
-          <Input
+          <PasswordInput
             id="confirmPassword"
-            type="password"
             placeholder="••••••••"
             autoComplete="new-password"
             disabled={mutation.isPending}

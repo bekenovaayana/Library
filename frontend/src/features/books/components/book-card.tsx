@@ -1,5 +1,12 @@
+"use client";
+
 import Link from "next/link";
 import { User } from "lucide-react";
+import {
+  buildEstimatedDueDate,
+  DEFAULT_LIBRARY_POLICY,
+  useLibraryPolicy,
+} from "@/features/library/hooks/useLibraryPolicy";
 import { BookCover } from "@/features/books/components/book-cover";
 import { BorrowButton } from "@/features/borrow/components/borrow-button";
 import { ReserveButton } from "@/features/reservations/components/reserve-button";
@@ -26,7 +33,16 @@ const statusConfig = {
 } as const;
 
 export function BookCard({ book, className }: BookCardProps) {
+  const { data: policy } = useLibraryPolicy();
+  const lending = policy ?? DEFAULT_LIBRARY_POLICY;
   const status = statusConfig[book.status];
+  const lendingTerms = {
+    borrowDays: lending.borrowDays,
+    finePerDay: lending.finePerDay,
+    maxFine: lending.maxFine,
+    estimatedDueDate:
+      book.status === "AVAILABLE" ? buildEstimatedDueDate(lending.borrowDays) : null,
+  };
 
   return (
     <Card
@@ -79,11 +95,18 @@ export function BookCard({ book, className }: BookCardProps) {
               bookId={book.id}
               bookTitle={book.title}
               status={book.status}
+              lendingTerms={lendingTerms}
               size="sm"
               className="h-9 w-full text-xs sm:text-sm"
             />
           ) : (
-            <ReserveButton bookId={book.id} bookTitle={book.title} />
+            <ReserveButton
+              bookId={book.id}
+              bookTitle={book.title}
+              userHasReservation={book.userHasReservation}
+              queueSize={book.reservationQueueSize ?? 0}
+              lendingTerms={lendingTerms}
+            />
           )}
         </div>
       </CardFooter>

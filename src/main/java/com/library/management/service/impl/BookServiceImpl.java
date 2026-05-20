@@ -1,5 +1,6 @@
 package com.library.management.service.impl;
 
+import com.library.management.config.LibraryProperties;
 import com.library.management.dto.request.BookRequest;
 import com.library.management.dto.response.BookDetailResponse;
 import com.library.management.dto.response.BookResponse;
@@ -27,6 +28,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -38,6 +40,7 @@ public class BookServiceImpl implements BookService {
     private final UserRepository userRepository;
     private final BookMapper bookMapper;
     private final BookAuditLogRepository bookAuditLogRepository;
+    private final LibraryProperties libraryProperties;
 
     public BookServiceImpl(
             BookRepository bookRepository,
@@ -45,7 +48,8 @@ public class BookServiceImpl implements BookService {
             BookReservationRepository reservationRepository,
             UserRepository userRepository,
             BookMapper bookMapper,
-            BookAuditLogRepository bookAuditLogRepository
+            BookAuditLogRepository bookAuditLogRepository,
+            LibraryProperties libraryProperties
     ) {
         this.bookRepository = bookRepository;
         this.borrowRecordRepository = borrowRecordRepository;
@@ -53,6 +57,7 @@ public class BookServiceImpl implements BookService {
         this.userRepository = userRepository;
         this.bookMapper = bookMapper;
         this.bookAuditLogRepository = bookAuditLogRepository;
+        this.libraryProperties = libraryProperties;
     }
 
     @Override
@@ -71,7 +76,32 @@ public class BookServiceImpl implements BookService {
                 SearchUtils.likePattern(criteria.query()),
                 criteria.status(),
                 pageable
-        ).map(bookMapper::toResponse);
+        ).map(this::toBookResponse);
+    }
+
+    private BookResponse toBookResponse(Book book) {
+        BookResponse response = bookMapper.toResponse(book);
+        enrichListResponse(response, book);
+        return response;
+    }
+
+    private void enrichListResponse(BookResponse response, Book book) {
+        long queueSize = book.getStatus() == BookStatus.BORROWED
+                ? reservationRepository.countByBookId(book.getId())
+                : 0L;
+        response.setReservationQueueSize(queueSize);
+
+        try {
+            String username = SecurityUtils.getCurrentUsername();
+            User user = userRepository.findByUsername(username).orElse(null);
+            if (user != null) {
+                response.setUserHasReservation(
+                        reservationRepository.existsByUserIdAndBookId(user.getId(), book.getId())
+                );
+            }
+        } catch (IllegalStateException ex) {
+            response.setUserHasReservation(false);
+        }
     }
 
     @Override
@@ -91,7 +121,14 @@ public class BookServiceImpl implements BookService {
         long queueSize = reservationRepository.countByBookId(id);
         boolean userHasReservation = resolveUserHasReservation(id);
 
-        return bookMapper.toDetailResponse(book, activeBorrow, queueSize, userHasReservation);
+        BookDetailResponse detail = bookMapper.toDetailResponse(book, activeBorrow, queueSize, userHasReservation);
+        detail.setBorrowDays(libraryProperties.getBorrowDays());
+        detail.setFinePerDay(libraryProperties.getFinePerDay());
+        detail.setMaxFine(libraryProperties.getMaxFine());
+        if (book.getStatus() == BookStatus.AVAILABLE) {
+            detail.setEstimatedDueDate(LocalDateTime.now().plusDays(libraryProperties.getBorrowDays()));
+        }
+        return detail;
     }
 
     private boolean resolveUserHasReservation(Long bookId) {

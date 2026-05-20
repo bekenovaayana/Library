@@ -54,6 +54,47 @@ Prometheus config: `ops/prometheus/prometheus.yml` (used when `--profile monitor
 
 **Sentry:** not bundled; set `SENTRY_DSN` in your deployment platform and add the SDK if needed.
 
+## Email notifications
+
+Borrow reminders, overdue notices, and reservation availability use `NotificationService`.
+
+| `MAIL_ENABLED` | Behavior |
+|----------------|----------|
+| `false` (default) | Log-only (`LoggingNotificationService`) |
+| `true` + SMTP settings | HTML emails via `EmailNotificationService` |
+
+### SendGrid (SMTP)
+
+```env
+MAIL_ENABLED=true
+MAIL_HOST=smtp.sendgrid.net
+MAIL_PORT=587
+MAIL_USERNAME=apikey
+MAIL_PASSWORD=SG.your_sendgrid_api_key
+MAIL_FROM=verified-sender@yourdomain.com
+MAIL_FROM_NAME=Library Management System
+MAIL_APP_URL=https://your-frontend.example
+```
+
+`MAIL_FROM` must be verified in the SendGrid dashboard. Scheduler runs daily at 09:00 (`BorrowReminderScheduler`).
+
+### Local testing with MailHog
+
+```bash
+docker run -d --name mailhog -p 1025:1025 -p 8025:8025 mailhog/mailhog
+```
+
+```env
+MAIL_ENABLED=true
+MAIL_HOST=localhost
+MAIL_PORT=1025
+MAIL_USERNAME=
+MAIL_PASSWORD=
+MAIL_FROM=library@local.test
+```
+
+Open http://localhost:8025 to view captured messages.
+
 ## HTTPS / nginx
 
 Example config: `ops/nginx/library.conf`

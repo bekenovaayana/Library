@@ -4,12 +4,17 @@ export interface BookBorrowInfo {
   borrowId: number;
   username: string;
   borrowDate: string;
+  dueDate?: string;
 }
 
 export interface BookDetail extends Book {
   currentBorrow: BookBorrowInfo | null;
   reservationQueueSize: number;
   userHasReservation: boolean;
+  borrowDays: number;
+  finePerDay: number;
+  maxFine: number;
+  estimatedDueDate?: string | null;
 }
 
 export function isBookDetail(book: Book | BookDetail): book is BookDetail {

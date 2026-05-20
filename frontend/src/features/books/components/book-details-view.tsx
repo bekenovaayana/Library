@@ -8,6 +8,7 @@ import { BorrowButton } from "@/features/borrow/components/borrow-button";
 import { ReserveButton } from "@/features/reservations/components/reserve-button";
 import { Button } from "@/shared/ui/button";
 import { Spinner } from "@/shared/components/spinner";
+import { buildEstimatedDueDate } from "@/features/library/hooks/useLibraryPolicy";
 import { ROUTES } from "@/shared/constants/routes";
 import type { BookDetail } from "@/features/books/types/book-detail";
 
@@ -38,13 +39,29 @@ export function BookDetailsView({ bookId, initialBook }: BookDetailsViewProps) {
         </Button>
 
         {book.status === "AVAILABLE" ? (
-          <BorrowButton bookId={book.id} bookTitle={book.title} status={book.status} />
+          <BorrowButton
+            bookId={book.id}
+            bookTitle={book.title}
+            status={book.status}
+            lendingTerms={{
+              borrowDays: book.borrowDays ?? 14,
+              finePerDay: book.finePerDay ?? 1,
+              maxFine: book.maxFine ?? 50,
+              estimatedDueDate: book.estimatedDueDate,
+            }}
+          />
         ) : (
           <ReserveButton
             bookId={book.id}
             bookTitle={book.title}
             userHasReservation={book.userHasReservation}
             queueSize={book.reservationQueueSize}
+            lendingTerms={{
+              borrowDays: book.borrowDays ?? 14,
+              finePerDay: book.finePerDay ?? 1,
+              maxFine: book.maxFine ?? 50,
+              estimatedDueDate: buildEstimatedDueDate(book.borrowDays ?? 14),
+            }}
           />
         )}
 

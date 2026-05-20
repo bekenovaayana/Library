@@ -8,6 +8,7 @@ import { useRegister } from "@/features/auth/hooks/useRegister";
 import { FormField } from "@/features/auth/components/form-field";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
+import { PasswordInput } from "@/shared/ui/password-input";
 import { Spinner } from "@/shared/components/spinner";
 import { ROUTES } from "@/shared/constants/routes";
 
@@ -61,9 +62,8 @@ export function RegisterForm() {
         </FormField>
 
         <FormField label="Password" htmlFor="password" error={errors.password?.message}>
-          <Input
+          <PasswordInput
             id="password"
-            type="password"
             placeholder="••••••••"
             autoComplete="new-password"
             disabled={isPending}
@@ -77,9 +77,8 @@ export function RegisterForm() {
           htmlFor="confirmPassword"
           error={errors.confirmPassword?.message}
         >
-          <Input
+          <PasswordInput
             id="confirmPassword"
-            type="password"
             placeholder="••••••••"
             autoComplete="new-password"
             disabled={isPending}

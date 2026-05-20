@@ -6,7 +6,15 @@ import { APIErrorHandler } from "@/shared/ux/api/api-error-handler";
 
 function shouldRetryQuery(failureCount: number, error: unknown): boolean {
   const parsed = APIErrorHandler.parse(error);
-  if (parsed.kind === "offline" || parsed.kind === "unauthorized" || parsed.kind === "forbidden") {
+  if (
+    parsed.kind === "offline" ||
+    parsed.kind === "unauthorized" ||
+    parsed.kind === "forbidden" ||
+    parsed.kind === "server" ||
+    parsed.kind === "conflict" ||
+    parsed.kind === "not_found" ||
+    (parsed.status !== undefined && parsed.status >= 500)
+  ) {
     return false;
   }
   return failureCount < 1;

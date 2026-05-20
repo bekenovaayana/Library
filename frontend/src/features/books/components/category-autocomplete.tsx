@@ -25,6 +25,8 @@ export function CategoryAutocomplete({
     queryKey: ["books", "categories", debounced],
     queryFn: () => booksApi.getCategories(debounced || undefined),
     staleTime: 60_000,
+    retry: false,
+    meta: { silent: true },
   });
 
   const listId = `${id}-suggestions`;
