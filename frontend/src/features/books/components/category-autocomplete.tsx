@@ -5,6 +5,7 @@ import { useDebounce } from "@/shared/hooks/use-debounce";
 import { booksApi } from "@/features/books/api/booksApi";
 import { Input } from "@/shared/ui/input";
 import { cn } from "@/shared/lib/utils";
+import { ru } from "@/shared/i18n";
 
 interface CategoryAutocompleteProps {
   value: string;
@@ -36,7 +37,7 @@ export function CategoryAutocomplete({
       <Input
         id={id}
         list={listId}
-        placeholder="e.g. Programming"
+        placeholder={ru.books.categoryPlaceholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}

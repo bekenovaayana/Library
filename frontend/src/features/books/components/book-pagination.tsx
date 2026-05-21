@@ -3,6 +3,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { cn } from "@/shared/lib/utils";
+import { pluralBooks, ru } from "@/shared/i18n";
 
 interface BookPaginationProps {
   page: number;
@@ -50,10 +51,12 @@ export function BookPagination({
   disabled = false,
   className,
 }: BookPaginationProps) {
+  const booksWord = pluralBooks(totalElements);
+
   if (totalPages <= 1) {
     return (
       <p className={cn("text-center text-sm text-muted-foreground", className)}>
-        Showing {totalElements} {totalElements === 1 ? "book" : "books"}
+        {ru.common.showing} {totalElements} {booksWord}
       </p>
     );
   }
@@ -69,17 +72,17 @@ export function BookPagination({
     >
       <p className="text-center text-sm text-muted-foreground sm:text-left">
         <span className="font-medium text-foreground">
-          Page {page + 1} of {totalPages}
+          {ru.common.page} {page + 1} {ru.common.of} {totalPages}
         </span>
         <span className="hidden sm:inline"> · </span>
         <span className="block sm:inline">
-          {totalElements} {totalElements === 1 ? "book" : "books"} total
+          {totalElements} {booksWord} {ru.common.total}
         </span>
       </p>
 
       <nav
         className="flex items-center justify-center gap-1 sm:justify-end"
-        aria-label="Pagination"
+        aria-label={ru.common.paginationNav}
       >
         <Button
           variant="outline"
@@ -87,7 +90,7 @@ export function BookPagination({
           className="h-9 w-9 shrink-0"
           onClick={() => onPageChange(page - 1)}
           disabled={disabled || page === 0}
-          aria-label="Previous page"
+          aria-label={ru.common.prevPage}
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
@@ -110,7 +113,7 @@ export function BookPagination({
                 className="h-9 w-9"
                 onClick={() => onPageChange(pageNum)}
                 disabled={disabled}
-                aria-label={`Page ${pageNum + 1}`}
+                aria-label={ru.common.pageN(pageNum + 1)}
                 aria-current={pageNum === page ? "page" : undefined}
               >
                 {pageNum + 1}
@@ -125,7 +128,7 @@ export function BookPagination({
           className="h-9 w-9 shrink-0"
           onClick={() => onPageChange(page + 1)}
           disabled={disabled || page >= totalPages - 1}
-          aria-label="Next page"
+          aria-label={ru.common.nextPage}
         >
           <ChevronRight className="h-4 w-4" />
         </Button>

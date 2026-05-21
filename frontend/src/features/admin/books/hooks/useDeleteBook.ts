@@ -9,6 +9,7 @@ import { updateBooksListCache } from "@/features/admin/books/hooks/update-books-
 import type { Book } from "@/features/books/types/book";
 import type { PaginatedResponse } from "@/shared/types/api";
 import { getApiErrorMessage } from "@/services/api/apiClient";
+import { ru } from "@/shared/i18n";
 
 export function useDeleteBook() {
   const queryClient = useQueryClient();
@@ -31,7 +32,7 @@ export function useDeleteBook() {
       return { snapshots };
     },
     onSuccess: () => {
-      toast.success("Book deleted successfully");
+      toast.success(ru.admin.bookDeleted);
       void queryClient.invalidateQueries({ queryKey: bookKeys.all });
       void queryClient.invalidateQueries({ queryKey: adminKeys.statistics() });
     },

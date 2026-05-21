@@ -5,6 +5,7 @@ import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { FormSelect } from "@/shared/components/form";
 import { SORT_OPTIONS, type AvailabilityFilter } from "@/features/books/types/book";
+import { bookStatusLabel, ru } from "@/shared/i18n";
 
 interface BooksToolbarProps {
   title: string;
@@ -45,7 +46,7 @@ export function BooksToolbar({
         <div className="relative flex-1 sm:max-w-sm">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search by title..."
+            placeholder={ru.admin.searchTitle}
             value={title}
             onChange={(e) => onTitleChange(e.target.value)}
             disabled={disabled}
@@ -54,18 +55,18 @@ export function BooksToolbar({
         </div>
         <Button onClick={onAddBook} disabled={disabled} className="shrink-0">
           <Plus className="mr-2 h-4 w-4" />
-          Add book
+          {ru.admin.addBook}
         </Button>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <div className="space-y-1.5">
           <label htmlFor="admin-author-filter" className="text-xs font-medium text-muted-foreground">
-            Author
+            {ru.books.author}
           </label>
           <Input
             id="admin-author-filter"
-            placeholder="Filter author..."
+            placeholder={ru.admin.filterAuthor}
             value={author}
             onChange={(e) => onAuthorChange(e.target.value)}
             disabled={disabled}
@@ -77,11 +78,11 @@ export function BooksToolbar({
             htmlFor="admin-category-filter"
             className="text-xs font-medium text-muted-foreground"
           >
-            Category
+            {ru.books.categoryLabel}
           </label>
           <Input
             id="admin-category-filter"
-            placeholder="Filter category..."
+            placeholder={ru.admin.filterCategory}
             value={category}
             onChange={(e) => onCategoryChange(e.target.value)}
             disabled={disabled}
@@ -90,7 +91,7 @@ export function BooksToolbar({
 
         <div className="space-y-1.5">
           <label htmlFor="admin-status-filter" className="text-xs font-medium text-muted-foreground">
-            Status
+            {ru.books.status}
           </label>
           <FormSelect
             id="admin-status-filter"
@@ -98,16 +99,16 @@ export function BooksToolbar({
             onChange={(e) => onStatusChange(e.target.value as AvailabilityFilter)}
             disabled={disabled}
             options={[
-              { value: "ALL", label: "All statuses" },
-              { value: "AVAILABLE", label: "Available" },
-              { value: "BORROWED", label: "Borrowed" },
+              { value: "ALL", label: ru.admin.allStatuses },
+              { value: "AVAILABLE", label: bookStatusLabel("AVAILABLE") },
+              { value: "BORROWED", label: bookStatusLabel("BORROWED") },
             ]}
           />
         </div>
 
         <div className="space-y-1.5">
           <label htmlFor="admin-sort-filter" className="text-xs font-medium text-muted-foreground">
-            Sort
+            {ru.books.sortBy}
           </label>
           <FormSelect
             id="admin-sort-filter"
@@ -126,7 +127,7 @@ export function BooksToolbar({
             className="w-full"
           >
             <X className="mr-2 h-4 w-4" />
-            Clear
+            {ru.common.clear}
           </Button>
         </div>
       </div>

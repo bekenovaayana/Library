@@ -1,6 +1,7 @@
 import type { AxiosError } from "axios";
 import type { ApiErrorResponse } from "@/shared/types/api";
 import { isApiError } from "@/services/api/errors";
+import { ru } from "@/shared/i18n";
 import { showErrorToast } from "@/shared/ux/toast/toast";
 
 export type ApiErrorKind =
@@ -28,11 +29,10 @@ export interface ApiErrorHandleOptions {
   silent?: boolean;
 }
 
-const OFFLINE_MESSAGE =
-  "You appear to be offline. Check your connection and try again.";
-const NETWORK_MESSAGE = "Unable to reach the server. Please try again shortly.";
-const TIMEOUT_MESSAGE = "The request timed out. Please try again.";
-const DEFAULT_MESSAGE = "An unexpected error occurred. Please try again.";
+const OFFLINE_MESSAGE = ru.errors.offline;
+const NETWORK_MESSAGE = ru.errors.network;
+const TIMEOUT_MESSAGE = ru.errors.timeout;
+const DEFAULT_MESSAGE = ru.errors.unexpected;
 
 export class APIErrorHandler {
   static isBrowserOffline(): boolean {

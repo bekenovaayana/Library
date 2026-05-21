@@ -1,5 +1,6 @@
 "use client";
 
+import { ru } from "@/shared/i18n";
 import { Modal } from "@/shared/components/modal";
 import { Button } from "@/shared/ui/button";
 import { Spinner } from "@/shared/components/spinner";
@@ -22,8 +23,8 @@ export function ConfirmModal({
   onOpenChange,
   title,
   description,
-  confirmLabel = "Confirm",
-  cancelLabel = "Cancel",
+  confirmLabel = ru.common.confirm,
+  cancelLabel = ru.common.cancel,
   onConfirm,
   isLoading = false,
   variant = "default",
@@ -58,7 +59,7 @@ export function ConfirmModal({
       }
     >
       {children ?? (
-        <p className="text-sm text-muted-foreground">This action cannot be undone.</p>
+        <p className="text-sm text-muted-foreground">{ru.common.actionCannotBeUndone}</p>
       )}
     </Modal>
   );

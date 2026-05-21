@@ -11,6 +11,7 @@ import { Spinner } from "@/shared/components/spinner";
 import { buildEstimatedDueDate } from "@/features/library/hooks/useLibraryPolicy";
 import { ROUTES } from "@/shared/constants/routes";
 import type { BookDetail } from "@/features/books/types/book-detail";
+import { ru } from "@/shared/i18n";
 
 interface BookDetailsViewProps {
   bookId: number;
@@ -34,7 +35,7 @@ export function BookDetailsView({ bookId, initialBook }: BookDetailsViewProps) {
         <Button variant="outline" asChild>
           <Link href={ROUTES.BOOKS}>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to catalog
+            {ru.books.backToCatalog}
           </Link>
         </Button>
 
@@ -68,7 +69,7 @@ export function BookDetailsView({ bookId, initialBook }: BookDetailsViewProps) {
         {isFetching && (
           <span className="flex items-center gap-2 text-sm text-muted-foreground">
             <Spinner size="sm" />
-            Updating...
+            {ru.books.updatingBook}
           </span>
         )}
       </div>

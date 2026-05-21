@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { FallbackUI } from "@/shared/ux/components/fallback-ui";
+import { ru } from "@/shared/i18n";
 
 export default function GlobalError({
   error,
@@ -17,16 +18,16 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <html lang="en">
+    <html lang="ru">
       <body className="font-sans antialiased">
         <main className="flex min-h-screen items-center justify-center bg-white p-6 dark:bg-zinc-950">
           <div className="w-full max-w-lg">
             <FallbackUI
               kind="render"
-              title="Application error"
-              message={error.message || "A critical error occurred. Please reload the application."}
+              title={ru.errors.unexpectedCritical}
+              message={error.message || ru.errors.unexpectedCritical}
               onRetry={reset}
-              retryLabel="Reload application"
+              retryLabel={ru.errors.reloadApp}
             />
           </div>
         </main>

@@ -17,6 +17,7 @@ import { useAuthStore } from "@/store/authStore";
 import type { AdminUser } from "@/features/admin/monitoring/types/admin-user";
 import type { SortDirection } from "@/shared/components/data-table/types";
 import type { UserRole } from "@/shared/types/auth";
+import { ru } from "@/shared/i18n";
 
 interface UsersTableProps {
   users: AdminUser[];
@@ -39,8 +40,8 @@ export function UsersTable({ users, isLoading, onSort, getSortDirection }: Users
     <DataTableShell
       isLoading={isLoading}
       isEmpty={isEmpty}
-      emptyTitle="No users found"
-      emptyDescription="Try a different search term or clear your filters."
+      emptyTitle={ru.admin.noUsers}
+      emptyDescription={ru.admin.noUsersHint}
       emptyIcon={<Users className="mx-auto h-6 w-6 text-muted-foreground" />}
     >
       <div className="hidden overflow-x-auto sm:block">
@@ -49,7 +50,7 @@ export function UsersTable({ users, isLoading, onSort, getSortDirection }: Users
             <TableRow>
               <TableHead>
                 <SortableHeader
-                  label="Username"
+                  label={ru.auth.username}
                   field="username"
                   direction={getSortDirection("username")}
                   onSort={onSort}
@@ -57,14 +58,14 @@ export function UsersTable({ users, isLoading, onSort, getSortDirection }: Users
               </TableHead>
               <TableHead>
                 <SortableHeader
-                  label="Email"
+                  label={ru.auth.email}
                   field="email"
                   direction={getSortDirection("email")}
                   onSort={onSort}
                 />
               </TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{ru.admin.role}</TableHead>
+              <TableHead className="text-right">{ru.borrow.tableActions}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -79,7 +80,7 @@ export function UsersTable({ users, isLoading, onSort, getSortDirection }: Users
                   </TableCell>
                   <TableCell className="text-right">
                     {isSelf ? (
-                      <span className="text-xs text-muted-foreground">You</span>
+                      <span className="text-xs text-muted-foreground">{ru.common.you}</span>
                     ) : user.role === "USER" ? (
                       <Button
                         size="sm"
@@ -87,7 +88,7 @@ export function UsersTable({ users, isLoading, onSort, getSortDirection }: Users
                         disabled={roleMutation.isPending}
                         onClick={() => handleRoleChange(user, "ADMIN")}
                       >
-                        Make admin
+                        {ru.admin.makeAdmin}
                       </Button>
                     ) : (
                       <Button
@@ -96,7 +97,7 @@ export function UsersTable({ users, isLoading, onSort, getSortDirection }: Users
                         disabled={roleMutation.isPending}
                         onClick={() => handleRoleChange(user, "USER")}
                       >
-                        Make user
+                        {ru.admin.makeUser}
                       </Button>
                     )}
                   </TableCell>
@@ -127,7 +128,7 @@ export function UsersTable({ users, isLoading, onSort, getSortDirection }: Users
                     handleRoleChange(user, user.role === "USER" ? "ADMIN" : "USER")
                   }
                 >
-                  {user.role === "USER" ? "Make admin" : "Make user"}
+                  {user.role === "USER" ? ru.admin.makeAdmin : ru.admin.makeUser}
                 </Button>
               )}
             </div>

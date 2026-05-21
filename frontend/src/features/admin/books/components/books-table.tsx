@@ -25,6 +25,7 @@ import { Button } from "@/shared/ui/button";
 import { Spinner } from "@/shared/components/spinner";
 import { cn } from "@/shared/lib/utils";
 import type { Book } from "@/features/books/types/book";
+import { ru } from "@/shared/i18n";
 
 type SortableField = "title" | "author" | "category";
 
@@ -86,7 +87,7 @@ export function BooksTable({ books, onSort, getSortDirection, isLoading }: Books
             <TableRow>
               <TableHead>
                 <SortableHeader
-                  label="Title"
+                  label={ru.books.titleField}
                   field="title"
                   direction={getSortDirection("title")}
                   onSort={onSort}
@@ -94,7 +95,7 @@ export function BooksTable({ books, onSort, getSortDirection, isLoading }: Books
               </TableHead>
               <TableHead>
                 <SortableHeader
-                  label="Author"
+                  label={ru.books.author}
                   field="author"
                   direction={getSortDirection("author")}
                   onSort={onSort}
@@ -102,14 +103,14 @@ export function BooksTable({ books, onSort, getSortDirection, isLoading }: Books
               </TableHead>
               <TableHead className="hidden md:table-cell">
                 <SortableHeader
-                  label="Category"
+                  label={ru.books.categoryLabel}
                   field="category"
                   direction={getSortDirection("category")}
                   onSort={onSort}
                 />
               </TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="w-[70px] text-right">Actions</TableHead>
+              <TableHead>{ru.books.status}</TableHead>
+              <TableHead className="w-[70px] text-right">{ru.borrow.tableActions}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -122,7 +123,7 @@ export function BooksTable({ books, onSort, getSortDirection, isLoading }: Books
             ) : books.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
-                  No books found
+                  {ru.admin.noBooks}
                 </TableCell>
               </TableRow>
             ) : (
@@ -148,14 +149,14 @@ export function BooksTable({ books, onSort, getSortDirection, isLoading }: Books
                       ) : (
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" aria-label={`Actions for ${book.title}`}>
+                            <Button variant="ghost" size="icon" aria-label={ru.admin.actionsFor(book.title)}>
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem onClick={() => setEditingBook(book)}>
                               <Pencil className="mr-2 h-4 w-4" />
-                              Edit
+                              {ru.common.edit}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
@@ -163,7 +164,7 @@ export function BooksTable({ books, onSort, getSortDirection, isLoading }: Books
                               onClick={() => setDeletingBook(book)}
                             >
                               <Trash2 className="mr-2 h-4 w-4" />
-                              Delete
+                              {ru.common.delete}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>

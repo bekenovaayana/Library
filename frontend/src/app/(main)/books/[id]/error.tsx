@@ -2,21 +2,25 @@
 
 import { useEffect } from "react";
 import { ErrorState } from "@/shared/components/error-state";
+import { ru } from "@/shared/i18n";
 
-interface BookDetailErrorProps {
+export default function BookDetailError({
+  error,
+  reset,
+}: {
   error: Error & { digest?: string };
   reset: () => void;
-}
-
-export default function BookDetailError({ error, reset }: BookDetailErrorProps) {
+}) {
   useEffect(() => {
-    console.error("Book detail page error:", error);
+    if (process.env.NODE_ENV === "development") {
+      console.error("[BookDetailError]", error);
+    }
   }, [error]);
 
   return (
     <ErrorState
-      title="Failed to load book"
-      message={error.message || "Something went wrong while loading this book."}
+      title={ru.errors.bookLoadFailed}
+      message={error.message}
       onRetry={reset}
     />
   );

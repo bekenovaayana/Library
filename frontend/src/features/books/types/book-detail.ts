@@ -1,3 +1,4 @@
+import { bookStatusLongLabel } from "@/shared/i18n";
 import type { Book, BookStatus } from "./book";
 
 export interface BookBorrowInfo {
@@ -22,5 +23,5 @@ export function isBookDetail(book: Book | BookDetail): book is BookDetail {
 }
 
 export function getAvailabilityLabel(status: BookStatus): string {
-  return status === "AVAILABLE" ? "Available to borrow" : "Currently borrowed";
+  return bookStatusLongLabel(status);
 }

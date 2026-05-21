@@ -14,6 +14,7 @@ import {
 } from "@/shared/components/table";
 import type { AdminBorrowRecord } from "@/features/admin/monitoring/types/admin-borrow-record";
 import type { SortDirection } from "@/shared/components/data-table/types";
+import { ru } from "@/shared/i18n";
 
 interface BorrowRecordsTableProps {
   records: AdminBorrowRecord[];
@@ -34,26 +35,26 @@ export function BorrowRecordsTable({
     <DataTableShell
       isLoading={isLoading}
       isEmpty={isEmpty}
-      emptyTitle="No borrow records"
-      emptyDescription="No records match your search or filter criteria."
+      emptyTitle={ru.admin.noBorrowRecords}
+      emptyDescription={ru.admin.noRecordsMatch}
       emptyIcon={<BookMarked className="mx-auto h-6 w-6 text-muted-foreground" />}
     >
       <div className="hidden overflow-x-auto md:block">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>User</TableHead>
-              <TableHead>Book</TableHead>
+              <TableHead>{ru.auth.username}</TableHead>
+              <TableHead>{ru.borrow.tableBook}</TableHead>
               <TableHead>
                 <SortableHeader
-                  label="Borrowed"
+                  label={ru.borrow.tableBorrowed}
                   field="borrowDate"
                   direction={getSortDirection("borrowDate")}
                   onSort={onSort}
                 />
               </TableHead>
-              <TableHead>Returned</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead>{ru.borrow.tableReturned}</TableHead>
+              <TableHead>{ru.borrow.tableStatus}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -79,19 +80,17 @@ export function BorrowRecordsTable({
       <div className="divide-y md:hidden">
         {records.map((record) => (
           <div key={record.borrowId} className="space-y-2 p-4">
-            <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0">
-                <p className="font-medium">{record.bookTitle}</p>
-                <p className="text-sm text-muted-foreground">{record.username}</p>
-              </div>
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-medium">{record.bookTitle}</span>
               <BorrowStatusBadge status={record.status} />
             </div>
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-              <span>Borrowed: {formatBorrowDate(record.borrowDate)}</span>
-              {record.returnDate ? (
-                <span>Returned: {formatBorrowDate(record.returnDate)}</span>
-              ) : null}
-            </div>
+            <p className="text-sm text-muted-foreground">{record.username}</p>
+            <p className="text-xs text-muted-foreground">
+              {ru.borrow.borrowedOn} {formatBorrowDate(record.borrowDate)}
+              {record.returnDate
+                ? ` · ${ru.borrow.returnedOn} ${formatBorrowDate(record.returnDate)}`
+                : ""}
+            </p>
           </div>
         ))}
       </div>

@@ -17,6 +17,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/sha
 import { LoadingSkeleton } from "@/shared/components/loading-skeleton";
 import { cn } from "@/shared/lib/utils";
 import type { AdminStatistics } from "@/features/admin/types/admin-statistics";
+import { ru } from "@/shared/i18n";
 
 const BAR_COLORS = ["hsl(221 83% 53%)", "hsl(262 83% 58%)", "hsl(25 95% 53%)", "hsl(142 71% 45%)"];
 const PIE_COLORS = ["hsl(25 95% 53%)", "hsl(142 71% 45%)"];
@@ -29,17 +30,17 @@ interface LibraryOverviewChartProps {
 
 function buildBarData(stats: AdminStatistics) {
   return [
-    { name: "Users", value: stats.totalUsers },
-    { name: "Books", value: stats.totalBooks },
-    { name: "Borrowed", value: stats.borrowedBooks },
-    { name: "Available", value: stats.availableBooks },
+    { name: ru.admin.chartUsers, value: stats.totalUsers },
+    { name: ru.admin.chartBooks, value: stats.totalBooks },
+    { name: ru.admin.chartBorrowed, value: stats.borrowedBooks },
+    { name: ru.admin.chartAvailable, value: stats.availableBooks },
   ];
 }
 
 function buildPieData(stats: AdminStatistics) {
   return [
-    { name: "Borrowed", value: stats.borrowedBooks },
-    { name: "Available", value: stats.availableBooks },
+    { name: ru.admin.chartBorrowed, value: stats.borrowedBooks },
+    { name: ru.admin.chartAvailable, value: stats.availableBooks },
   ];
 }
 
@@ -85,8 +86,8 @@ export function LibraryOverviewCharts({
     >
       <Card className="transition-shadow hover:shadow-md">
         <CardHeader>
-          <CardTitle className="text-base">Overview</CardTitle>
-          <CardDescription>Counts across users and books</CardDescription>
+          <CardTitle className="text-base">{ru.admin.overview}</CardTitle>
+          <CardDescription>{ru.admin.overviewDesc}</CardDescription>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={280}>
@@ -113,8 +114,8 @@ export function LibraryOverviewCharts({
 
       <Card className="transition-shadow hover:shadow-md">
         <CardHeader>
-          <CardTitle className="text-base">Book availability</CardTitle>
-          <CardDescription>Borrowed vs available copies</CardDescription>
+          <CardTitle className="text-base">{ru.admin.bookAvailability}</CardTitle>
+          <CardDescription>{ru.admin.borrowedVsAvailable}</CardDescription>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={280}>

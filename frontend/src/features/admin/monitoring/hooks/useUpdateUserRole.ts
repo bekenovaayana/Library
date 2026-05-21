@@ -6,6 +6,7 @@ import { adminApi } from "@/features/admin/api/adminApi";
 import { adminKeys } from "@/features/admin/hooks/query-keys";
 import type { UserRole } from "@/shared/types/auth";
 import { getApiErrorMessage } from "@/services/api/apiClient";
+import { ru } from "@/shared/i18n";
 
 export function useUpdateUserRole() {
   const queryClient = useQueryClient();
@@ -15,7 +16,7 @@ export function useUpdateUserRole() {
       adminApi.updateUserRole(userId, role),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: adminKeys.all });
-      toast.success("User role updated");
+      toast.success(ru.admin.roleUpdated);
     },
     onError: (error) => toast.error(getApiErrorMessage(error)),
   });

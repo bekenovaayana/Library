@@ -11,6 +11,7 @@ import { FormField } from "@/features/auth/components/form-field";
 import { Button } from "@/shared/ui/button";
 import { PasswordInput } from "@/shared/ui/password-input";
 import { Spinner } from "@/shared/components/spinner";
+import { ru } from "@/shared/i18n";
 
 export function ChangePasswordForm() {
   const mutation = useChangePassword();
@@ -35,7 +36,7 @@ export function ChangePasswordForm() {
       noValidate
     >
       <FormField
-        label="Current password"
+        label={ru.auth.currentPassword}
         htmlFor="currentPassword"
         error={errors.currentPassword?.message}
       >
@@ -48,7 +49,7 @@ export function ChangePasswordForm() {
         />
       </FormField>
 
-      <FormField label="New password" htmlFor="newPassword" error={errors.newPassword?.message}>
+      <FormField label={ru.auth.newPassword} htmlFor="newPassword" error={errors.newPassword?.message}>
         <PasswordInput
           id="newPassword"
           autoComplete="new-password"
@@ -59,7 +60,7 @@ export function ChangePasswordForm() {
       </FormField>
 
       <FormField
-        label="Confirm new password"
+        label={ru.auth.confirmNewPassword}
         htmlFor="confirmPassword"
         error={errors.confirmPassword?.message}
       >
@@ -76,10 +77,10 @@ export function ChangePasswordForm() {
         {mutation.isPending ? (
           <>
             <Spinner size="sm" className="text-primary-foreground" />
-            Saving...
+            {ru.auth.saving}
           </>
         ) : (
-          "Change password"
+          ru.auth.changePassword
         )}
       </Button>
     </form>

@@ -9,6 +9,7 @@ import { BOOKS_QUERY_KEY } from "@/features/books/hooks/useBooks";
 import { bookKeys } from "@/features/books/hooks/book-keys";
 import type { BorrowRecord } from "@/features/borrow/types/borrow";
 import { getApiErrorMessage } from "@/services/api/apiClient";
+import { ru } from "@/shared/i18n";
 
 interface ReturnContext {
   previousMyBorrows?: BorrowRecord[];
@@ -43,7 +44,7 @@ export function useReturnBook() {
       return { previousMyBorrows, borrowId } satisfies ReturnContext & { borrowId: number };
     },
     onSuccess: (data) => {
-      toast.success(`Returned "${data.bookTitle}"`);
+      toast.success(ru.borrow.returnToast(data.bookTitle));
       void queryClient.invalidateQueries({ queryKey: borrowKeys.my() });
       void queryClient.invalidateQueries({ queryKey: [BOOKS_QUERY_KEY] });
       void queryClient.invalidateQueries({ queryKey: bookKeys.all });

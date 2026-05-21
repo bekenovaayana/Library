@@ -13,6 +13,7 @@ import {
   TableRow,
 } from "@/shared/components/table";
 import type { AdminBorrowRecord } from "@/features/admin/monitoring/types/admin-borrow-record";
+import { ru } from "@/shared/i18n";
 
 interface ActivityTableProps {
   records: AdminBorrowRecord[];
@@ -26,25 +27,25 @@ export function ActivityTable({ records, isLoading }: ActivityTableProps) {
     <div className="space-y-3">
       <div className="flex items-center gap-2">
         <Activity className="h-4 w-4 text-primary" />
-        <h2 className="text-lg font-semibold">Live activity</h2>
-        <span className="text-sm text-muted-foreground">Currently borrowed books</span>
+        <h2 className="text-lg font-semibold">{ru.admin.liveActivity}</h2>
+        <span className="text-sm text-muted-foreground">{ru.admin.currentlyBorrowed}</span>
       </div>
 
       <DataTableShell
         isLoading={isLoading}
         isEmpty={isEmpty}
-        emptyTitle="No active borrows"
-        emptyDescription="All books are currently available in the library."
+        emptyTitle={ru.admin.noActiveBorrows}
+        emptyDescription={ru.admin.allAvailable}
         emptyIcon={<Activity className="mx-auto h-6 w-6 text-muted-foreground" />}
       >
         <div className="hidden overflow-x-auto sm:block">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>User</TableHead>
-                <TableHead>Book</TableHead>
-                <TableHead>Since</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>{ru.auth.username}</TableHead>
+                <TableHead>{ru.borrow.tableBook}</TableHead>
+                <TableHead>{ru.admin.since}</TableHead>
+                <TableHead>{ru.borrow.tableStatus}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

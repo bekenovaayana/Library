@@ -1,3 +1,5 @@
+import { ru } from "@/shared/i18n";
+
 export type BookStatus = "AVAILABLE" | "BORROWED";
 
 export type AvailabilityFilter = BookStatus | "ALL";
@@ -43,12 +45,12 @@ export const DEFAULT_BOOKS_QUERY: BooksQueryParams = {
 };
 
 export const SORT_OPTIONS = [
-  { value: "title,asc", label: "Title (A–Z)" },
-  { value: "title,desc", label: "Title (Z–A)" },
-  { value: "author,asc", label: "Author (A–Z)" },
-  { value: "author,desc", label: "Author (Z–A)" },
-  { value: "category,asc", label: "Category (A–Z)" },
-  { value: "category,desc", label: "Category (Z–A)" },
+  { value: "title,asc", label: ru.sort.titleAsc },
+  { value: "title,desc", label: ru.sort.titleDesc },
+  { value: "author,asc", label: ru.sort.authorAsc },
+  { value: "author,desc", label: ru.sort.authorDesc },
+  { value: "category,asc", label: ru.sort.categoryAsc },
+  { value: "category,desc", label: ru.sort.categoryDesc },
 ] as const;
 
 export const ADMIN_DEFAULT_BOOKS_QUERY: BooksQueryParams = {

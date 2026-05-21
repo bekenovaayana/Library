@@ -1,19 +1,13 @@
 import { z } from "zod";
+import { ru } from "@/shared/i18n";
+
+const v = ru.validation;
 
 export const bookFormSchema = z.object({
-  title: z
-    .string()
-    .min(1, "Title is required")
-    .max(200, "Title must not exceed 200 characters"),
-  author: z
-    .string()
-    .min(1, "Author is required")
-    .max(100, "Author must not exceed 100 characters"),
-  category: z
-    .string()
-    .min(1, "Category is required")
-    .max(50, "Category must not exceed 50 characters"),
-  coverUrl: z.string().max(500).optional(),
+  title: z.string().min(1, v.titleRequired).max(200, v.titleMax200),
+  author: z.string().min(1, v.authorRequired).max(100, v.authorMax100),
+  category: z.string().min(1, v.categoryRequired).max(50, v.categoryMax50),
+  coverUrl: z.string().url().optional().or(z.literal("")),
 });
 
 export type BookFormValues = z.infer<typeof bookFormSchema>;

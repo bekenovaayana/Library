@@ -16,15 +16,16 @@ import { ROUTES } from "@/shared/constants/routes";
 import { useAuthStore } from "@/store";
 import { useUiStore } from "@/store/uiStore";
 import { Button } from "@/shared/ui/button";
+import { ru } from "@/shared/i18n";
 
 const navItems = [
-  { href: ROUTES.DASHBOARD, label: "Dashboard", icon: LayoutDashboard },
-  { href: ROUTES.BOOKS, label: "Books", icon: BookOpen },
-  { href: ROUTES.MY_BOOKS, label: "My Books", icon: BookMarked },
-  { href: ROUTES.ACCOUNT, label: "Account", icon: UserCircle },
+  { href: ROUTES.DASHBOARD, label: ru.nav.dashboard, icon: LayoutDashboard },
+  { href: ROUTES.BOOKS, label: ru.nav.books, icon: BookOpen },
+  { href: ROUTES.MY_BOOKS, label: ru.nav.myBooks, icon: BookMarked },
+  { href: ROUTES.ACCOUNT, label: ru.nav.account, icon: UserCircle },
 ];
 
-const adminNavItem = { href: ROUTES.ADMIN, label: "Admin", icon: Shield };
+const adminNavItem = { href: ROUTES.ADMIN, label: ru.nav.admin, icon: Shield };
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -52,7 +53,7 @@ export function Sidebar() {
         <div className="flex h-14 items-center justify-between border-b px-4 lg:hidden">
           <div className="flex items-center gap-2 font-semibold">
             <Library className="h-5 w-5" />
-            Menu
+            {ru.nav.menu}
           </div>
           <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)}>
             <X className="h-5 w-5" />

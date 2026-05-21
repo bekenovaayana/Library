@@ -11,6 +11,7 @@ import { Input } from "@/shared/ui/input";
 import { PasswordInput } from "@/shared/ui/password-input";
 import { Spinner } from "@/shared/components/spinner";
 import { ROUTES } from "@/shared/constants/routes";
+import { ru } from "@/shared/i18n";
 
 export function LoginForm() {
   const loginMutation = useLogin();
@@ -34,11 +35,11 @@ export function LoginForm() {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-        <FormField label="Email" htmlFor="email" error={errors.email?.message}>
+        <FormField label={ru.auth.email} htmlFor="email" error={errors.email?.message}>
           <Input
             id="email"
             type="email"
-            placeholder="you@example.com"
+            placeholder={ru.auth.emailPlaceholder}
             autoComplete="email"
             disabled={loginMutation.isPending}
             aria-invalid={Boolean(errors.email)}
@@ -46,11 +47,11 @@ export function LoginForm() {
           />
         </FormField>
 
-        <FormField label="Password" htmlFor="password" error={errors.password?.message}>
+        <FormField label={ru.auth.password} htmlFor="password" error={errors.password?.message}>
           <div className="space-y-1">
             <PasswordInput
               id="password"
-              placeholder="••••••••"
+              placeholder={ru.auth.passwordPlaceholder}
               autoComplete="current-password"
               disabled={loginMutation.isPending}
               aria-invalid={Boolean(errors.password)}
@@ -62,7 +63,7 @@ export function LoginForm() {
                 className="text-primary hover:underline"
                 tabIndex={loginMutation.isPending ? -1 : 0}
               >
-                Forgot password?
+                {ru.auth.forgotPassword}
               </Link>
             </p>
           </div>
@@ -72,22 +73,22 @@ export function LoginForm() {
           {loginMutation.isPending ? (
             <>
               <Spinner size="sm" className="text-primary-foreground" />
-              Signing in...
+              {ru.auth.signingIn}
             </>
           ) : (
-            "Sign in"
+            ru.auth.signIn
           )}
         </Button>
       </form>
 
       <p className="mt-4 text-center text-sm text-muted-foreground">
-        Don&apos;t have an account?{" "}
+        {ru.auth.noAccount}{" "}
         <Link
           href={ROUTES.REGISTER}
           className="font-medium text-primary hover:underline"
           tabIndex={loginMutation.isPending ? -1 : 0}
         >
-          Register
+          {ru.auth.register}
         </Link>
       </p>
     </>

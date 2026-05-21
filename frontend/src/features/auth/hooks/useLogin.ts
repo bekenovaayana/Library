@@ -8,6 +8,7 @@ import type { LoginFormValues } from "@/features/auth/schemas";
 import { ROUTES } from "@/shared/constants/routes";
 import { getApiErrorMessage } from "@/services/api/apiClient";
 import { useAuthStore } from "@/store/authStore";
+import { ru } from "@/shared/i18n";
 
 export function useLogin() {
   const router = useRouter();
@@ -18,7 +19,7 @@ export function useLogin() {
     mutationFn: (values: LoginFormValues) => authApi.login(values),
     onSuccess: (data) => {
       setAuth({ username: data.username, role: data.role }, data.token, data.refreshToken);
-      toast.success(`Welcome back, ${data.username}!`);
+      toast.success(ru.auth.welcomeUser(data.username));
 
       const redirect = searchParams.get("redirect");
       const defaultHome = data.role === "ADMIN" ? ROUTES.ADMIN : ROUTES.DASHBOARD;

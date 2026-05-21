@@ -5,6 +5,7 @@ import { useOnlineStatus } from "@/shared/ux/hooks/use-online-status";
 import { useMounted } from "@/shared/hooks/use-mounted";
 import { Button } from "@/shared/ui/button";
 import { cn } from "@/shared/lib/utils";
+import { ru } from "@/shared/i18n";
 
 interface OfflineBannerProps {
   onRetry?: () => void;
@@ -33,19 +34,17 @@ export function OfflineBanner({ onRetry, className }: OfflineBannerProps) {
       )}
     >
       <WifiOff className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" aria-hidden />
-      <p className="text-amber-900 dark:text-amber-200">
-        You are offline. Some features may be unavailable.
-      </p>
+      <p className="text-amber-900 dark:text-amber-200">{ru.errors.offlineBanner}</p>
       <Button
         type="button"
         variant="outline"
         size="sm"
         onClick={handleRetry}
         className="h-7 shrink-0 border-amber-500/40"
-        aria-label="Retry connection"
+        aria-label={ru.errors.retryConnection}
       >
         <RefreshCw className="mr-1 h-3 w-3" aria-hidden />
-        Retry
+        {ru.common.retry}
       </Button>
     </div>
   );

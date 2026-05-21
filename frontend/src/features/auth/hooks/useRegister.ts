@@ -8,6 +8,7 @@ import type { RegisterFormValues } from "@/features/auth/schemas";
 import { ROUTES } from "@/shared/constants/routes";
 import { getApiErrorMessage } from "@/services/api/apiClient";
 import { useAuthStore } from "@/store/authStore";
+import { ru } from "@/shared/i18n";
 
 export function useRegister() {
   const router = useRouter();
@@ -17,7 +18,7 @@ export function useRegister() {
     mutationFn: (values: RegisterFormValues) => authApi.register(values),
     onSuccess: (data) => {
       setAuth({ username: data.username, role: data.role }, data.token, data.refreshToken);
-      toast.success("Account created successfully!");
+      toast.success(ru.auth.accountCreated);
       const home = data.role === "ADMIN" ? ROUTES.ADMIN : ROUTES.DASHBOARD;
       router.push(home);
       router.refresh();

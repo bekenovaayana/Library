@@ -21,6 +21,7 @@ import { DataTablePagination } from "@/shared/components/data-table";
 import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
 import { getApiErrorMessage } from "@/services/api/apiClient";
+import { ru } from "@/shared/i18n";
 
 const PAGE_SIZE = 6;
 
@@ -44,11 +45,9 @@ export function UserDashboardContent() {
     <div className="mx-auto w-full max-w-[1400px] space-y-8">
       <header className="space-y-1">
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
-          Welcome back{user?.username ? `, ${user.username}` : ""}
+          {user?.username ? ru.dashboard.welcome(user.username) : ru.auth.welcomeBack}
         </h1>
-        <p className="text-sm text-muted-foreground sm:text-base">
-          Your borrowing activity at a glance
-        </p>
+        <p className="text-sm text-muted-foreground sm:text-base">{ru.dashboard.subtitle}</p>
       </header>
 
       {isAdmin && (
@@ -56,16 +55,14 @@ export function UserDashboardContent() {
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
               <Shield className="h-4 w-4 text-primary" />
-              Administrator
+              {ru.dashboard.adminBadge}
             </CardTitle>
-            <CardDescription>
-              Library-wide statistics and management are available in the admin panel.
-            </CardDescription>
+            <CardDescription>{ru.dashboard.adminHint}</CardDescription>
           </CardHeader>
           <CardContent>
             <Button asChild size="sm">
               <Link href={ROUTES.ADMIN}>
-                Open admin dashboard
+                {ru.dashboard.openAdmin}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
@@ -78,9 +75,9 @@ export function UserDashboardContent() {
           <Link href={ROUTES.BOOKS}>
             <BookOpen className="h-5 w-5 shrink-0" />
             <span className="text-left">
-              <span className="block font-semibold">Browse catalog</span>
+              <span className="block font-semibold">{ru.dashboard.browseCatalog}</span>
               <span className="block text-xs font-normal opacity-90">
-                Search and borrow books
+                {ru.dashboard.browseCatalogDesc}
               </span>
             </span>
           </Link>
@@ -89,9 +86,9 @@ export function UserDashboardContent() {
           <Link href={ROUTES.MY_BOOKS}>
             <BookMarked className="h-5 w-5 shrink-0" />
             <span className="text-left">
-              <span className="block font-semibold">My books</span>
+              <span className="block font-semibold">{ru.dashboard.myBooksCard}</span>
               <span className="block text-xs font-normal text-muted-foreground">
-                Full borrow history
+                {ru.dashboard.myBooksCardDesc}
               </span>
             </span>
           </Link>
@@ -118,33 +115,33 @@ export function UserDashboardContent() {
         <>
           <DashboardGrid className="sm:grid-cols-2 lg:grid-cols-4">
             <StatsCard
-              title="Currently borrowed"
+              title={ru.dashboard.statBorrowed}
               value={activeBorrows.length}
-              description="On this page"
+              description={ru.dashboard.statOnPage}
               icon={BookMarked}
               iconClassName="bg-amber-500/10 [&_svg]:text-amber-600 dark:[&_svg]:text-amber-400"
               animationIndex={0}
             />
             <StatsCard
-              title="Overdue"
+              title={ru.dashboard.statOverdue}
               value={overdueCount}
-              description="Needs return"
+              description={ru.dashboard.statNeedsReturn}
               icon={BookMarked}
               iconClassName="bg-destructive/10 [&_svg]:text-destructive"
               animationIndex={1}
             />
             <StatsCard
-              title="Total records"
+              title={ru.dashboard.statTotal}
               value={totalElements}
-              description="All time"
+              description={ru.dashboard.statAllTime}
               icon={Library}
               iconClassName="bg-violet-500/10 [&_svg]:text-violet-600 dark:[&_svg]:text-violet-400"
               animationIndex={2}
             />
             <StatsCard
-              title="Returned"
+              title={ru.dashboard.statReturned}
               value={records.filter((r) => r.status === "RETURNED").length}
-              description="On this page"
+              description={ru.dashboard.statOnPage}
               icon={CheckCircle2}
               iconClassName="bg-emerald-500/10 [&_svg]:text-emerald-600 dark:[&_svg]:text-emerald-400"
               animationIndex={3}
@@ -154,15 +151,13 @@ export function UserDashboardContent() {
           <section className="space-y-4">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h2 className="text-xl font-semibold tracking-tight">Borrow history</h2>
-                <p className="text-sm text-muted-foreground">
-                  Paginated list of your loans
-                </p>
+                <h2 className="text-xl font-semibold tracking-tight">{ru.dashboard.historyTitle}</h2>
+                <p className="text-sm text-muted-foreground">{ru.dashboard.historySubtitle}</p>
               </div>
               {totalElements > 0 && (
                 <Button variant="outline" size="sm" asChild className="shrink-0">
                   <Link href={ROUTES.MY_BOOKS}>
-                    Full history
+                    {ru.dashboard.fullHistory}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
@@ -171,13 +166,13 @@ export function UserDashboardContent() {
 
             {totalElements === 0 ? (
               <EmptyState
-                title="No borrowed books yet"
-                description="Explore the catalog and borrow your first book."
+                title={ru.dashboard.noBorrows}
+                description={ru.dashboard.noBorrowsHint}
                 action={
                   <Button asChild>
                     <Link href={ROUTES.BOOKS}>
                       <BookOpen className="mr-2 h-4 w-4" />
-                      Browse catalog
+                      {ru.dashboard.browseCatalogBtn}
                     </Link>
                   </Button>
                 }
@@ -195,7 +190,6 @@ export function UserDashboardContent() {
                   totalElements={totalElements}
                   onPageChange={setPage}
                   disabled={isLoading}
-                  itemLabel="records"
                 />
               </>
             )}

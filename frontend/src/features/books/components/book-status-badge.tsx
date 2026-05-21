@@ -1,6 +1,7 @@
 import { cn } from "@/shared/lib/utils";
 import type { BookStatus } from "@/features/books/types/book";
 import { getAvailabilityLabel } from "@/features/books/types/book-detail";
+import { bookStatusLabel } from "@/shared/i18n";
 
 interface BookStatusBadgeProps {
   status: BookStatus;
@@ -26,8 +27,6 @@ export function BookStatusBadge({
   size = "md",
   className,
 }: BookStatusBadgeProps) {
-  const label = status === "AVAILABLE" ? "Available" : "Borrowed";
-
   return (
     <div className={cn("flex flex-col gap-1", className)}>
       <span
@@ -37,7 +36,7 @@ export function BookStatusBadge({
           sizeStyles[size],
         )}
       >
-        {label}
+        {bookStatusLabel(status)}
       </span>
       {showAvailability && (
         <span className="text-sm text-muted-foreground">{getAvailabilityLabel(status)}</span>

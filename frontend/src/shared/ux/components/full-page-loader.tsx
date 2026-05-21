@@ -1,5 +1,6 @@
 import { Loader2 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
+import { ru } from "@/shared/i18n";
 
 interface FullPageLoaderProps {
   message?: string;
@@ -7,7 +8,7 @@ interface FullPageLoaderProps {
 }
 
 export function FullPageLoader({
-  message = "Loading...",
+  message = ru.common.loading,
   className,
 }: FullPageLoaderProps) {
   return (

@@ -1,6 +1,7 @@
 import { EmptyState } from "@/shared/components/empty-state";
 import { TableSkeleton } from "@/shared/ux/skeleton";
 import { cn } from "@/shared/lib/utils";
+import { ru } from "@/shared/i18n";
 
 interface DataTableShellProps {
   children: React.ReactNode;
@@ -17,8 +18,8 @@ export function DataTableShell({
   children,
   isLoading,
   isEmpty,
-  emptyTitle = "No results",
-  emptyDescription = "Try adjusting your search or filters.",
+  emptyTitle = ru.common.noResults,
+  emptyDescription = ru.common.noResultsHint,
   emptyIcon,
   className,
 }: DataTableShellProps) {

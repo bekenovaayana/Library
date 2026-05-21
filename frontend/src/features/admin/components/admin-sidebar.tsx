@@ -7,6 +7,7 @@ import { ADMIN_NAV_ITEMS } from "@/features/admin/constants/navigation";
 import { ROUTES } from "@/shared/constants/routes";
 import { cn } from "@/shared/lib/utils";
 import { Button } from "@/shared/ui/button";
+import { ru } from "@/shared/i18n";
 
 interface AdminSidebarProps {
   open: boolean;
@@ -35,7 +36,7 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
         <div className="flex h-14 items-center justify-between border-b px-4">
           <div className="flex items-center gap-2 font-semibold">
             <Shield className="h-5 w-5 text-primary" />
-            <span>Admin</span>
+            <span>{ru.nav.admin}</span>
           </div>
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={onClose}>
             <X className="h-5 w-5" />
@@ -54,11 +55,11 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
                 <span
                   key={href}
                   className="flex cursor-not-allowed items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground/50"
-                  title="Coming soon"
+                  title={ru.common.comingSoon}
                 >
                   <Icon className="h-4 w-4" />
                   {label}
-                  <span className="ml-auto text-xs">Soon</span>
+                  <span className="ml-auto text-xs">{ru.common.soon}</span>
                 </span>
               );
             }
@@ -89,11 +90,11 @@ export function AdminSidebar({ open, onClose }: AdminSidebarProps) {
             className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to app
+            {ru.nav.backToApp}
           </Link>
           <div className="mt-3 flex items-center gap-2 px-3 text-xs text-muted-foreground">
             <Library className="h-3.5 w-3.5" />
-            Library Management
+            {ru.nav.libraryManagement}
           </div>
         </div>
       </aside>

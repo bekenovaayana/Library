@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { authApi } from "@/features/auth/api/authApi";
 import { ROUTES } from "@/shared/constants/routes";
 import { useAuthStore } from "@/store/authStore";
+import { ru } from "@/shared/i18n";
 
 export function useLogout() {
   const router = useRouter();
@@ -18,7 +19,7 @@ export function useLogout() {
       // Best-effort revoke; always clear local session
     } finally {
       clearAuth();
-      toast.success("You have been logged out");
+      toast.success(ru.auth.loggedOut);
       router.push(ROUTES.LOGIN);
       router.refresh();
     }

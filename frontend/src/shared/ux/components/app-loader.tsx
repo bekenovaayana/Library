@@ -4,6 +4,7 @@ import { Loader2 } from "lucide-react";
 import { useMounted } from "@/shared/hooks/use-mounted";
 import { useUiStore } from "@/store/uiStore";
 import { cn } from "@/shared/lib/utils";
+import { ru } from "@/shared/i18n";
 
 export function AppLoader() {
   const mounted = useMounted();
@@ -25,9 +26,9 @@ export function AppLoader() {
       <div className="flex flex-col items-center gap-3 rounded-lg border bg-card p-6 shadow-lg">
         <Loader2 className="h-8 w-8 animate-spin text-primary" aria-hidden />
         <p className="text-sm font-medium text-foreground">
-          {message ?? "Please wait..."}
+          {message ?? ru.common.pleaseWait}
         </p>
-        <span className="sr-only">{message ?? "Loading"}</span>
+        <span className="sr-only">{message ?? ru.common.loading}</span>
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ import { useReturnBook } from "@/features/borrow/hooks/useReturnBook";
 import { Modal } from "@/shared/components/modal";
 import { Button } from "@/shared/ui/button";
 import { Spinner } from "@/shared/components/spinner";
+import { ru } from "@/shared/i18n";
 
 interface ReturnButtonProps {
   borrowId: number;
@@ -32,21 +33,16 @@ export function ReturnButton({
 
   return (
     <>
-      <Button
-        variant={variant}
-        size={size}
-        disabled={isPending}
-        onClick={() => setOpen(true)}
-      >
+      <Button variant={variant} size={size} disabled={isPending} onClick={() => setOpen(true)}>
         {isPending ? (
           <>
             <Spinner size="sm" />
-            Returning...
+            {ru.borrow.returning}
           </>
         ) : (
           <>
             <RotateCcw className="mr-2 h-4 w-4" />
-            Return
+            {ru.borrow.return}
           </>
         )}
       </Button>
@@ -54,29 +50,27 @@ export function ReturnButton({
       <Modal
         open={open}
         onOpenChange={setOpen}
-        title="Confirm return"
-        description={`Return "${bookTitle}" to the library?`}
+        title={ru.borrow.confirmReturn}
+        description={ru.borrow.confirmReturnDesc(bookTitle)}
         footer={
           <>
             <Button variant="outline" onClick={() => setOpen(false)} disabled={isPending}>
-              Cancel
+              {ru.common.cancel}
             </Button>
             <Button onClick={handleConfirm} disabled={isPending}>
               {isPending ? (
                 <>
                   <Spinner size="sm" className="text-primary-foreground" />
-                  Confirming...
+                  {ru.borrow.confirming}
                 </>
               ) : (
-                "Confirm return"
+                ru.borrow.confirmReturn
               )}
             </Button>
           </>
         }
       >
-        <p className="text-sm text-muted-foreground">
-          The book will become available for other users after you return it.
-        </p>
+        <p className="text-sm text-muted-foreground">{ru.borrow.returnHint}</p>
       </Modal>
     </>
   );

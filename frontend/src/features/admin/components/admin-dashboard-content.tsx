@@ -7,33 +7,34 @@ import { LibraryOverviewCharts } from "@/features/admin/components/library-overv
 import { DashboardGrid, StatsCard, StatsCardSkeleton } from "@/shared/components/dashboard";
 import { ErrorState } from "@/shared/components/error-state";
 import { getApiErrorMessage } from "@/services/api/apiClient";
+import { ru } from "@/shared/i18n";
 
 const STAT_CONFIG = [
   {
     key: "totalUsers" as const,
-    title: "Total Users",
-    description: "Registered accounts",
+    title: ru.admin.totalUsers,
+    description: ru.admin.totalUsersDesc,
     icon: Users,
     iconClassName: "bg-blue-500/10 [&_svg]:text-blue-600 dark:[&_svg]:text-blue-400",
   },
   {
     key: "totalBooks" as const,
-    title: "Total Books",
-    description: "Titles in catalog",
+    title: ru.admin.totalBooks,
+    description: ru.admin.totalBooksDesc,
     icon: BookOpen,
     iconClassName: "bg-violet-500/10 [&_svg]:text-violet-600 dark:[&_svg]:text-violet-400",
   },
   {
     key: "borrowedBooks" as const,
-    title: "Borrowed Books",
-    description: "Currently on loan",
+    title: ru.admin.borrowedBooksStat,
+    description: ru.admin.borrowedBooksDesc,
     icon: BookMarked,
     iconClassName: "bg-amber-500/10 [&_svg]:text-amber-600 dark:[&_svg]:text-amber-400",
   },
   {
     key: "availableBooks" as const,
-    title: "Available Books",
-    description: "Ready to borrow",
+    title: ru.admin.availableBooks,
+    description: ru.admin.availableBooksDesc,
     icon: Library,
     iconClassName: "bg-emerald-500/10 [&_svg]:text-emerald-600 dark:[&_svg]:text-emerald-400",
   },
@@ -44,8 +45,8 @@ export function AdminDashboardContent() {
 
   return (
     <AdminLayout
-      title="Admin Dashboard"
-      description="System overview and library statistics"
+      title={ru.admin.dashboardTitle}
+      description={ru.admin.dashboardSubtitle}
       onRefresh={() => refetch()}
       isRefreshing={isFetching && !isLoading}
     >

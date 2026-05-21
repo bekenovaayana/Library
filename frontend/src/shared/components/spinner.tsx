@@ -1,5 +1,6 @@
 import { Loader2 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
+import { ru } from "@/shared/i18n";
 
 interface SpinnerProps {
   className?: string;
@@ -14,12 +15,12 @@ const sizeClasses = {
 
 export function Spinner({ className, size = "md" }: SpinnerProps) {
   return (
-    <span role="status" className="inline-flex" aria-label="Loading">
+    <span role="status" className="inline-flex" aria-label={ru.common.loading}>
       <Loader2
         className={cn("animate-spin text-muted-foreground motion-reduce:animate-none", sizeClasses[size], className)}
         aria-hidden
       />
-      <span className="sr-only">Loading</span>
+      <span className="sr-only">{ru.common.loading}</span>
     </span>
   );
 }

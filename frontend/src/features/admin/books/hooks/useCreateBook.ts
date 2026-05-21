@@ -8,6 +8,7 @@ import { adminKeys } from "@/features/admin/hooks/query-keys";
 import { updateBooksListCache } from "@/features/admin/books/hooks/update-books-cache";
 import type { Book, BookPayload } from "@/features/books/types/book";
 import { getApiErrorMessage } from "@/services/api/apiClient";
+import { ru } from "@/shared/i18n";
 
 export function useCreateBook() {
   const queryClient = useQueryClient();
@@ -32,7 +33,7 @@ export function useCreateBook() {
       return { optimisticBook };
     },
     onSuccess: (data) => {
-      toast.success(`"${data.title}" has been added`);
+      toast.success(ru.admin.bookAdded(data.title));
       void queryClient.invalidateQueries({ queryKey: bookKeys.all });
       void queryClient.invalidateQueries({ queryKey: adminKeys.statistics() });
     },

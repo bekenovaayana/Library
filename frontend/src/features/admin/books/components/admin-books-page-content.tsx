@@ -10,6 +10,7 @@ import { useBooks } from "@/features/books/hooks/useBooks";
 import { BookPagination } from "@/features/books/components/book-pagination";
 import { ErrorState } from "@/shared/components/error-state";
 import { getApiErrorMessage } from "@/services/api/apiClient";
+import { ru } from "@/shared/i18n";
 
 export function AdminBooksPageContent() {
   const [formOpen, setFormOpen] = useState(false);
@@ -22,8 +23,8 @@ export function AdminBooksPageContent() {
 
   return (
     <AdminLayout
-      title="Book Management"
-      description="Add, edit, and remove books from the catalog"
+      title={ru.admin.bookManagement}
+      description={ru.admin.bookManagementSubtitle}
       onRefresh={() => refetch()}
       isRefreshing={isFetching && !isLoading}
     >

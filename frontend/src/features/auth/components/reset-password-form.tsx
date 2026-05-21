@@ -14,6 +14,7 @@ import { Input } from "@/shared/ui/input";
 import { PasswordInput } from "@/shared/ui/password-input";
 import { Spinner } from "@/shared/components/spinner";
 import { ROUTES } from "@/shared/constants/routes";
+import { ru } from "@/shared/i18n";
 
 interface ResetPasswordFormProps {
   initialToken?: string;
@@ -38,21 +39,21 @@ export function ResetPasswordForm({ initialToken = "" }: ResetPasswordFormProps)
   return (
     <>
       <form onSubmit={handleSubmit((values) => mutation.mutate(values))} className="space-y-4" noValidate>
-        <FormField label="Reset token" htmlFor="token" error={errors.token?.message}>
+        <FormField label={ru.auth.resetToken} htmlFor="token" error={errors.token?.message}>
           <Input
             id="token"
             type="text"
-            placeholder="Paste token from email"
+            placeholder={ru.auth.tokenPlaceholder}
             disabled={mutation.isPending}
             aria-invalid={Boolean(errors.token)}
             {...register("token")}
           />
         </FormField>
 
-        <FormField label="New password" htmlFor="newPassword" error={errors.newPassword?.message}>
+        <FormField label={ru.auth.newPassword} htmlFor="newPassword" error={errors.newPassword?.message}>
           <PasswordInput
             id="newPassword"
-            placeholder="••••••••"
+            placeholder={ru.auth.passwordPlaceholder}
             autoComplete="new-password"
             disabled={mutation.isPending}
             aria-invalid={Boolean(errors.newPassword)}
@@ -61,13 +62,13 @@ export function ResetPasswordForm({ initialToken = "" }: ResetPasswordFormProps)
         </FormField>
 
         <FormField
-          label="Confirm password"
+          label={ru.auth.confirmPassword}
           htmlFor="confirmPassword"
           error={errors.confirmPassword?.message}
         >
           <PasswordInput
             id="confirmPassword"
-            placeholder="••••••••"
+            placeholder={ru.auth.passwordPlaceholder}
             autoComplete="new-password"
             disabled={mutation.isPending}
             aria-invalid={Boolean(errors.confirmPassword)}
@@ -79,17 +80,17 @@ export function ResetPasswordForm({ initialToken = "" }: ResetPasswordFormProps)
           {mutation.isPending ? (
             <>
               <Spinner size="sm" className="text-primary-foreground" />
-              Updating...
+              {ru.auth.updating}
             </>
           ) : (
-            "Reset password"
+            ru.auth.resetPassword
           )}
         </Button>
       </form>
 
       <p className="mt-4 text-center text-sm text-muted-foreground">
         <Link href={ROUTES.LOGIN} className="font-medium text-primary hover:underline">
-          Back to sign in
+          {ru.auth.backToSignIn}
         </Link>
       </p>
     </>

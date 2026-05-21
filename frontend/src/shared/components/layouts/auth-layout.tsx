@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BookOpen } from "lucide-react";
 import { ROUTES } from "@/shared/constants/routes";
+import { ru } from "@/shared/i18n";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -14,7 +15,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
       <div className="mb-8 flex flex-col items-center gap-2 text-center">
         <Link href={ROUTES.HOME} className="flex items-center gap-2 text-xl font-bold">
           <BookOpen className="h-6 w-6" />
-          Library Management
+          {ru.app.name}
         </Link>
         <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
         {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}

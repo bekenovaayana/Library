@@ -4,6 +4,7 @@ import { ROUTES } from "@/shared/constants/routes";
 import type { ApiErrorResponse } from "@/shared/types/api";
 import { getStorageItem } from "@/shared/utils/storage";
 import { useAuthStore } from "@/store/authStore";
+import { ru } from "@/shared/i18n";
 import { APIErrorHandler } from "@/shared/ux/api/api-error-handler";
 import { isApiError } from "@/services/api/errors";
 import { refreshAccessToken } from "@/services/api/refreshAccessToken";
@@ -36,7 +37,7 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
       timestamp: new Date().toISOString(),
       status: 0,
       error: "Offline",
-      message: "You appear to be offline. Check your connection and try again.",
+      message: ru.errors.offline,
       path: config.url ?? "",
     } satisfies ApiErrorResponse);
   }
@@ -86,10 +87,10 @@ apiClient.interceptors.response.use(
       message:
         responseMessage ||
         (status && status >= 500
-          ? "Server error. Please try again later."
+          ? ru.errors.server
           : error.code === "ERR_NETWORK"
-            ? "Unable to reach the server. Please try again shortly."
-            : error.message || "An unexpected error occurred"),
+            ? ru.errors.network
+            : error.message || ru.errors.unexpected),
       path: error.config?.url ?? "",
     };
 

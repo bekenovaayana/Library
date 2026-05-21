@@ -11,6 +11,7 @@ import { ErrorState } from "@/shared/components/error-state";
 import { Spinner } from "@/shared/components/spinner";
 import { Button } from "@/shared/ui/button";
 import { getApiErrorMessage } from "@/services/api/apiClient";
+import { pluralBooks, ru } from "@/shared/i18n";
 
 export function BooksPageContent() {
   const filters = useBooksFilters();
@@ -25,10 +26,8 @@ export function BooksPageContent() {
     <div className="mx-auto w-full max-w-[1400px] space-y-6 md:space-y-8">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0 space-y-1">
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Books</h1>
-          <p className="text-sm text-muted-foreground sm:text-base">
-            Browse and search the library catalog
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{ru.books.title}</h1>
+          <p className="text-sm text-muted-foreground sm:text-base">{ru.books.subtitle}</p>
         </div>
         <Button
           variant="outline"
@@ -42,7 +41,7 @@ export function BooksPageContent() {
           ) : (
             <RefreshCw className="mr-2 h-4 w-4" />
           )}
-          Refresh
+          {ru.common.refresh}
         </Button>
       </header>
 
@@ -63,16 +62,16 @@ export function BooksPageContent() {
       {!isError && !isInitialLoading && (
         <p className="text-sm text-muted-foreground" aria-live="polite">
           {totalElements === 0
-            ? "No books match your criteria"
-            : `${totalElements} ${totalElements === 1 ? "book" : "books"} in catalog`}
-          {filters.hasActiveFilters ? " · filters applied" : ""}
+            ? ru.books.noMatch
+            : ru.books.inCatalog(totalElements, pluralBooks(totalElements))}
+          {filters.hasActiveFilters ? ru.books.filtersApplied : ""}
         </p>
       )}
 
       {isFetching && !isInitialLoading && (
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Spinner size="sm" />
-          Updating results…
+          {ru.books.updating}
         </div>
       )}
 
@@ -94,11 +93,9 @@ export function BooksPageContent() {
 
           {!isInitialLoading && books.length === 0 && (
             <EmptyState
-              title="No books found"
+              title={ru.books.notFound}
               description={
-                filters.hasActiveFilters
-                  ? "Try adjusting your search or filters."
-                  : "The catalog is empty. Check back later."
+                filters.hasActiveFilters ? ru.books.notFoundHint : ru.books.emptyCatalog
               }
               action={<BookOpen className="mx-auto h-6 w-6 text-muted-foreground" />}
             />

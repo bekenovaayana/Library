@@ -15,6 +15,7 @@ import { ErrorState } from "@/shared/components/error-state";
 import { getApiErrorMessage } from "@/services/api/apiClient";
 import type { UserRoleFilter } from "@/features/admin/monitoring/types/admin-user";
 import type { UserRole } from "@/shared/types/auth";
+import { roleLabel, ru } from "@/shared/i18n";
 
 export function AdminUsersPageContent() {
   const table = usePaginatedTableState({ defaultSort: "username,asc" });
@@ -44,8 +45,8 @@ export function AdminUsersPageContent() {
 
   return (
     <AdminLayout
-      title="User Monitoring"
-      description="View registered users and their roles"
+      title={ru.admin.userMonitoring}
+      description={ru.admin.userMonitoringSubtitle}
       onRefresh={() => refetch()}
       isRefreshing={isFetching && !isLoading}
     >
@@ -56,12 +57,12 @@ export function AdminUsersPageContent() {
             table.setSearch(value);
             table.resetPage();
           }}
-          searchPlaceholder="Search username or email..."
+          searchPlaceholder={ru.admin.searchUser}
           hasActiveFilters={hasActiveFilters}
           onClear={handleClear}
           disabled={isLoading}
           filters={
-            <FilterField id="role-filter" label="Role">
+            <FilterField id="role-filter" label={ru.admin.role}>
               <FormSelect
                 id="role-filter"
                 value={roleFilter}
@@ -71,9 +72,9 @@ export function AdminUsersPageContent() {
                 }}
                 disabled={isLoading}
                 options={[
-                  { value: "ALL", label: "All roles" },
-                  { value: "USER", label: "User" },
-                  { value: "ADMIN", label: "Admin" },
+                  { value: "ALL", label: ru.admin.allRoles },
+                  { value: "USER", label: roleLabel("USER") },
+                  { value: "ADMIN", label: roleLabel("ADMIN") },
                 ]}
               />
             </FilterField>

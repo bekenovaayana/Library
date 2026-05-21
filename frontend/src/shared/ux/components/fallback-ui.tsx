@@ -3,6 +3,7 @@
 import { AlertTriangle, RefreshCw, WifiOff } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { cn } from "@/shared/lib/utils";
+import { ru } from "@/shared/i18n";
 import type { ApiErrorKind } from "@/shared/ux/api/api-error-handler";
 
 interface FallbackUIProps {
@@ -18,24 +19,24 @@ const kindConfig: Record<
   ApiErrorKind | "render",
   { icon: typeof AlertTriangle; defaultTitle: string }
 > = {
-  offline: { icon: WifiOff, defaultTitle: "You are offline" },
-  network: { icon: WifiOff, defaultTitle: "Connection problem" },
-  timeout: { icon: AlertTriangle, defaultTitle: "Request timed out" },
-  validation: { icon: AlertTriangle, defaultTitle: "Invalid request" },
-  unauthorized: { icon: AlertTriangle, defaultTitle: "Session expired" },
-  forbidden: { icon: AlertTriangle, defaultTitle: "Access denied" },
-  not_found: { icon: AlertTriangle, defaultTitle: "Not found" },
-  conflict: { icon: AlertTriangle, defaultTitle: "Conflict" },
-  server: { icon: AlertTriangle, defaultTitle: "Server error" },
-  unknown: { icon: AlertTriangle, defaultTitle: "Something went wrong" },
-  render: { icon: AlertTriangle, defaultTitle: "Something went wrong" },
+  offline: { icon: WifiOff, defaultTitle: ru.errors.offlinePage },
+  network: { icon: WifiOff, defaultTitle: ru.errors.connectionProblem },
+  timeout: { icon: AlertTriangle, defaultTitle: ru.errors.timeout },
+  validation: { icon: AlertTriangle, defaultTitle: ru.errors.validation },
+  unauthorized: { icon: AlertTriangle, defaultTitle: ru.errors.sessionExpired },
+  forbidden: { icon: AlertTriangle, defaultTitle: ru.errors.forbidden },
+  not_found: { icon: AlertTriangle, defaultTitle: ru.errors.notFound },
+  conflict: { icon: AlertTriangle, defaultTitle: ru.errors.conflict },
+  server: { icon: AlertTriangle, defaultTitle: ru.errors.serverError },
+  unknown: { icon: AlertTriangle, defaultTitle: ru.errors.somethingWrong },
+  render: { icon: AlertTriangle, defaultTitle: ru.errors.somethingWrong },
 };
 
 export function FallbackUI({
   title,
-  message = "An unexpected error occurred. Please try again.",
+  message = ru.errors.unexpected,
   onRetry,
-  retryLabel = "Try again",
+  retryLabel = ru.common.retry,
   kind = "unknown",
   className,
 }: FallbackUIProps) {

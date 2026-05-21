@@ -17,6 +17,7 @@ import { ErrorState } from "@/shared/components/error-state";
 import { getApiErrorMessage } from "@/services/api/apiClient";
 import type { BorrowStatusFilter } from "@/features/admin/monitoring/types/admin-borrow-record";
 import type { BorrowRecordStatus } from "@/features/borrow/types/borrow";
+import { borrowStatusLabel, ru } from "@/shared/i18n";
 
 export function AdminBorrowedBooksPageContent() {
   const table = usePaginatedTableState({ defaultSort: "borrowDate,desc" });
@@ -49,8 +50,8 @@ export function AdminBorrowedBooksPageContent() {
 
   return (
     <AdminLayout
-      title="Borrow Monitoring"
-      description="Track borrow records and live library activity"
+      title={ru.admin.borrowMonitoring}
+      description={ru.admin.borrowMonitoringSubtitle}
       onRefresh={() => {
         void refetch();
         void activityQuery.refetch();
@@ -61,7 +62,7 @@ export function AdminBorrowedBooksPageContent() {
         <ActivityTable records={activityRecords} isLoading={activityQuery.isLoading} />
 
         <div className="space-y-6">
-          <h2 className="text-lg font-semibold">All borrow records</h2>
+          <h2 className="text-lg font-semibold">{ru.admin.allRecords}</h2>
 
           <DataTableToolbar
             search={table.search}
@@ -69,12 +70,12 @@ export function AdminBorrowedBooksPageContent() {
               table.setSearch(value);
               table.resetPage();
             }}
-            searchPlaceholder="Search user or book title..."
+            searchPlaceholder={ru.admin.searchUserOrBook}
             hasActiveFilters={hasActiveFilters}
             onClear={handleClear}
             disabled={isLoading}
             filters={
-              <FilterField id="status-filter" label="Status">
+              <FilterField id="status-filter" label={ru.books.status}>
                 <FormSelect
                   id="status-filter"
                   value={statusFilter}
@@ -84,9 +85,9 @@ export function AdminBorrowedBooksPageContent() {
                   }}
                   disabled={isLoading}
                   options={[
-                    { value: "ALL", label: "All statuses" },
-                    { value: "ACTIVE", label: "Active" },
-                    { value: "RETURNED", label: "Returned" },
+                    { value: "ALL", label: ru.admin.allStatuses },
+                    { value: "ACTIVE", label: borrowStatusLabel("ACTIVE") },
+                    { value: "RETURNED", label: borrowStatusLabel("RETURNED") },
                   ]}
                 />
               </FilterField>

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { FallbackUI } from "@/shared/ux/components/fallback-ui";
+import { ru } from "@/shared/i18n";
 
 export default function Error({
   error,
@@ -21,10 +22,10 @@ export default function Error({
       <div className="w-full max-w-lg">
         <FallbackUI
           kind="render"
-          title="Something went wrong"
-          message={error.message || "An unexpected error occurred while loading this page."}
+          title={ru.errors.somethingWrong}
+          message={error.message || ru.errors.unexpectedPage}
           onRetry={reset}
-          retryLabel="Try again"
+          retryLabel={ru.common.retry}
         />
       </div>
     </main>

@@ -22,6 +22,7 @@ import { Button } from "@/shared/ui/button";
 import { Spinner } from "@/shared/components/spinner";
 import { getApiErrorMessage } from "@/services/api/apiClient";
 import { isApiError } from "@/services/api/errors";
+import { ru } from "@/shared/i18n";
 
 interface ReserveButtonProps {
   bookId: number;
@@ -50,7 +51,7 @@ export function ReserveButton({
     mutationFn: () => reservationApi.reserve(bookId),
     onSuccess: (data) => {
       setOpen(false);
-      toast.success(`Added to waitlist (#${data.queuePosition}) for "${bookTitle}"`);
+      toast.success(ru.reservations.addedToast(data.queuePosition, bookTitle));
 
       queryClient.setQueriesData<PaginatedResponse<Book>>(
         { queryKey: bookKeys.all },
@@ -89,7 +90,7 @@ export function ReserveButton({
   const cancelMutation = useMutation({
     mutationFn: () => reservationApi.cancel(bookId),
     onSuccess: () => {
-      toast.success("Removed from waitlist");
+      toast.success(ru.reservations.removedToast);
       queryClient.setQueriesData<PaginatedResponse<Book>>(
         { queryKey: bookKeys.all },
         (old) =>
@@ -115,7 +116,7 @@ export function ReserveButton({
         onClick={() => cancelMutation.mutate()}
         disabled={cancelMutation.isPending}
       >
-        Leave waitlist
+        {ru.reservations.leaveWaitlist}
       </Button>
     );
   }
@@ -129,12 +130,8 @@ export function ReserveButton({
 
   return (
     <>
-      <Button
-        variant="secondary"
-        onClick={() => setOpen(true)}
-        disabled={isPending}
-      >
-        Join waitlist{queueSize > 0 ? ` (${queueSize} ahead)` : ""}
+      <Button variant="secondary" onClick={() => setOpen(true)} disabled={isPending}>
+        {queueSize > 0 ? ru.reservations.joinAhead(queueSize) : ru.reservations.joinWaitlist}
       </Button>
 
       <Modal
@@ -145,21 +142,21 @@ export function ReserveButton({
             reserveMutation.reset();
           }
         }}
-        title="Join waitlist"
-        description={`Reserve your place for "${bookTitle}"`}
+        title={ru.reservations.joinTitle}
+        description={ru.reservations.joinDesc(bookTitle)}
         footer={
           <>
             <Button variant="outline" onClick={() => setOpen(false)} disabled={isPending}>
-              Cancel
+              {ru.common.cancel}
             </Button>
             <Button onClick={handleConfirm} disabled={isPending}>
               {isPending ? (
                 <>
                   <Spinner size="sm" className="text-primary-foreground" />
-                  Joining...
+                  {ru.reservations.joining}
                 </>
               ) : (
-                "Confirm"
+                ru.common.confirm
               )}
             </Button>
           </>
@@ -167,9 +164,7 @@ export function ReserveButton({
       >
         <div className="space-y-4">
           <LendingTermsSummary terms={waitlistTerms} />
-          <p className="text-sm text-muted-foreground">
-            When the book becomes available, these loan terms will apply if you borrow it.
-          </p>
+          <p className="text-sm text-muted-foreground">{ru.reservations.joinHint}</p>
         </div>
       </Modal>
     </>

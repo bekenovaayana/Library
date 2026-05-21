@@ -4,6 +4,7 @@ import { Search, X } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { cn } from "@/shared/lib/utils";
+import { ru } from "@/shared/i18n";
 
 interface DataTableToolbarProps {
   search: string;
@@ -20,7 +21,7 @@ interface DataTableToolbarProps {
 export function DataTableToolbar({
   search,
   onSearchChange,
-  searchPlaceholder = "Search...",
+  searchPlaceholder = ru.common.search,
   onClear,
   hasActiveFilters = false,
   disabled = false,
@@ -56,7 +57,7 @@ export function DataTableToolbar({
                 className="w-full"
               >
                 <X className="mr-2 h-4 w-4" />
-                Clear
+                {ru.common.clear}
               </Button>
             </div>
           ) : null}

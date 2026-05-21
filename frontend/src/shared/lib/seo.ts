@@ -1,15 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { env } from "@/shared/config/env";
-
-const defaultDescription =
-  "Browse, borrow, and manage library books with a modern web application for readers and administrators.";
+import { ru } from "@/shared/i18n";
 
 export const siteConfig = {
   name: env.appName,
-  description: defaultDescription,
+  description: ru.app.description,
   url: env.appUrl,
   ogImage: `${env.appUrl}/og-image.svg`,
-  locale: "en_US",
+  locale: "ru_RU",
   twitterHandle: "@libraryapp",
 } as const;
 
@@ -32,14 +30,7 @@ export function createMetadata(overrides?: Metadata): Metadata {
     },
     description: siteConfig.description,
     applicationName: siteConfig.name,
-    keywords: [
-      "library",
-      "books",
-      "borrow",
-      "catalog",
-      "management",
-      "reading",
-    ],
+    keywords: [...ru.app.keywords],
     authors: [{ name: siteConfig.name }],
     creator: siteConfig.name,
     openGraph: {

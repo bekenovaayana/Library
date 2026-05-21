@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AdminSidebar } from "@/features/admin/components/admin-sidebar";
 import { AdminHeader } from "@/features/admin/components/admin-header";
+import { ru } from "@/shared/i18n";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -14,8 +15,8 @@ interface AdminLayoutProps {
 
 export function AdminLayout({
   children,
-  title = "Dashboard",
-  description = "System overview and library statistics",
+  title = ru.admin.dashboardTitle,
+  description = ru.admin.dashboardSubtitle,
   onRefresh,
   isRefreshing,
 }: AdminLayoutProps) {

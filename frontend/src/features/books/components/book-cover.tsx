@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { BookOpen } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
+import { ru } from "@/shared/i18n";
 
 interface BookCoverProps {
   title: string;
@@ -17,7 +18,7 @@ export function BookCover({ title, coverUrl, className, sizes = "200px" }: BookC
       <div className={cn("relative aspect-[2/3] overflow-hidden rounded-md bg-muted", className)}>
         <Image
           src={coverUrl}
-          alt={`Cover of ${title}`}
+          alt={ru.books.coverAlt(title)}
           fill
           className="object-cover"
           sizes={sizes}

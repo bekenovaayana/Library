@@ -1,4 +1,5 @@
 import { cn } from "@/shared/lib/utils";
+import { borrowStatusLabel } from "@/shared/i18n";
 import type { BorrowRecordStatus } from "@/features/borrow/types/borrow";
 
 interface BorrowStatusBadgeProps {
@@ -12,13 +13,11 @@ const styles: Record<BorrowRecordStatus, string> = {
   RETURNED: "bg-muted text-muted-foreground",
 };
 
-const labels: Record<BorrowRecordStatus, string> = {
-  ACTIVE: "Active",
-  RETURNED: "Returned",
-};
-
 export function BorrowStatusBadge({ status, overdue = false, className }: BorrowStatusBadgeProps) {
-  const label = overdue && status === "ACTIVE" ? "Overdue" : labels[status];
+  const label =
+    overdue && status === "ACTIVE"
+      ? borrowStatusLabel("OVERDUE")
+      : borrowStatusLabel(status);
   const style =
     overdue && status === "ACTIVE"
       ? "bg-destructive/10 text-destructive"

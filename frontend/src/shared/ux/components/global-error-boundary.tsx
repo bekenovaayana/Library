@@ -2,6 +2,7 @@
 
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { FallbackUI } from "@/shared/ux/components/fallback-ui";
+import { ru } from "@/shared/i18n";
 
 interface GlobalErrorBoundaryProps {
   children: ReactNode;
@@ -43,13 +44,10 @@ export class GlobalErrorBoundary extends Component<
         <div className="flex min-h-[50vh] items-center justify-center p-6">
           <FallbackUI
             kind="render"
-            title="Application error"
-            message={
-              this.state.error?.message ??
-              "The application encountered an unexpected error."
-            }
+            title={ru.errors.unexpectedSection}
+            message={this.state.error?.message ?? ru.errors.unexpectedSection}
             onRetry={this.handleReset}
-            retryLabel="Reload section"
+            retryLabel={ru.errors.reloadSection}
           />
         </div>
       );

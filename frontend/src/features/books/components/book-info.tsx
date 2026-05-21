@@ -4,13 +4,14 @@ import { BookStatusBadge } from "@/features/books/components/book-status-badge";
 import { LendingTermsSummary } from "@/features/borrow/components/lending-terms-summary";
 import { formatBorrowDate } from "@/features/borrow/utils/format-date";
 import { formatMoney } from "@/features/borrow/utils/format-money";
+import { bookStatusLabel, ru } from "@/shared/i18n";
 
 interface BookInfoProps {
   book: BookDetail;
 }
 
 function formatDate(dateString: string): string {
-  return new Intl.DateTimeFormat("en-US", {
+  return new Intl.DateTimeFormat("ru-RU", {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(new Date(dateString));
@@ -28,7 +29,7 @@ export function BookInfo({ book }: BookInfoProps) {
         <div className="flex items-start gap-3 rounded-lg border p-4">
           <User className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
           <div>
-            <dt className="text-sm font-medium text-muted-foreground">Author</dt>
+            <dt className="text-sm font-medium text-muted-foreground">{ru.books.author}</dt>
             <dd className="mt-1 text-base font-medium">{book.author}</dd>
           </div>
         </div>
@@ -36,7 +37,7 @@ export function BookInfo({ book }: BookInfoProps) {
         <div className="flex items-start gap-3 rounded-lg border p-4">
           <Tag className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
           <div>
-            <dt className="text-sm font-medium text-muted-foreground">Category</dt>
+            <dt className="text-sm font-medium text-muted-foreground">{ru.books.categoryLabel}</dt>
             <dd className="mt-1 text-base font-medium">{book.category}</dd>
           </div>
         </div>
@@ -44,7 +45,7 @@ export function BookInfo({ book }: BookInfoProps) {
         <div className="flex items-start gap-3 rounded-lg border p-4">
           <Hash className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
           <div>
-            <dt className="text-sm font-medium text-muted-foreground">Book ID</dt>
+            <dt className="text-sm font-medium text-muted-foreground">{ru.books.bookId}</dt>
             <dd className="mt-1 text-base font-medium">#{book.id}</dd>
           </div>
         </div>
@@ -52,25 +53,25 @@ export function BookInfo({ book }: BookInfoProps) {
         <div className="flex items-start gap-3 rounded-lg border p-4">
           <BookOpen className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
           <div>
-            <dt className="text-sm font-medium text-muted-foreground">Status</dt>
-            <dd className="mt-1 text-base font-medium">{book.status}</dd>
+            <dt className="text-sm font-medium text-muted-foreground">{ru.books.status}</dt>
+            <dd className="mt-1 text-base font-medium">{bookStatusLabel(book.status)}</dd>
           </div>
         </div>
       </dl>
 
       <section className="rounded-lg border bg-muted/30 p-5">
-        <h2 className="text-lg font-semibold">Borrow information</h2>
+        <h2 className="text-lg font-semibold">{ru.books.borrowInfo}</h2>
 
         {book.currentBorrow ? (
           <dl className="mt-4 grid gap-3 sm:grid-cols-2">
             <div>
-              <dt className="text-sm text-muted-foreground">Borrowed by</dt>
+              <dt className="text-sm text-muted-foreground">{ru.books.borrowedBy}</dt>
               <dd className="font-medium">{book.currentBorrow.username}</dd>
             </div>
             <div className="flex items-start gap-2">
               <Calendar className="mt-0.5 h-4 w-4 text-muted-foreground" />
               <div>
-                <dt className="text-sm text-muted-foreground">Borrow date</dt>
+                <dt className="text-sm text-muted-foreground">{ru.books.borrowDate}</dt>
                 <dd className="font-medium">{formatDate(book.currentBorrow.borrowDate)}</dd>
               </div>
             </div>
@@ -78,7 +79,7 @@ export function BookInfo({ book }: BookInfoProps) {
               <div className="flex items-start gap-2">
                 <Calendar className="mt-0.5 h-4 w-4 text-primary" />
                 <div>
-                  <dt className="text-sm text-muted-foreground">Return by</dt>
+                  <dt className="text-sm text-muted-foreground">{ru.books.returnBy}</dt>
                   <dd className="font-medium">{formatBorrowDate(book.currentBorrow.dueDate)}</dd>
                 </div>
               </div>
@@ -86,16 +87,14 @@ export function BookInfo({ book }: BookInfoProps) {
             <div className="flex items-start gap-2">
               <CircleDollarSign className="mt-0.5 h-4 w-4 text-muted-foreground" />
               <div>
-                <dt className="text-sm text-muted-foreground">Late fee</dt>
+                <dt className="text-sm text-muted-foreground">{ru.books.lateFee}</dt>
                 <dd className="font-medium">
-                  {formatMoney(book.finePerDay)}/day (max {formatMoney(book.maxFine)})
+                  {ru.books.perDayMax(formatMoney(book.finePerDay), formatMoney(book.maxFine))}
                 </dd>
               </div>
             </div>
             <div className="sm:col-span-2">
-              <p className="text-sm text-amber-700 dark:text-amber-400">
-                This book is currently on loan and not available for borrowing.
-              </p>
+              <p className="text-sm text-amber-700 dark:text-amber-400">{ru.books.onLoanHint}</p>
             </div>
           </dl>
         ) : (
@@ -108,9 +107,7 @@ export function BookInfo({ book }: BookInfoProps) {
                 estimatedDueDate: book.estimatedDueDate,
               }}
             />
-            <p className="text-sm text-muted-foreground">
-              Borrow this book to add it to your account. Terms above apply to your loan.
-            </p>
+            <p className="text-sm text-muted-foreground">{ru.books.availableHint}</p>
           </div>
         )}
       </section>

@@ -16,6 +16,7 @@ import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Spinner } from "@/shared/components/spinner";
 import type { Book } from "@/features/books/types/book";
+import { ru } from "@/shared/i18n";
 
 interface BookFormModalProps {
   open: boolean;
@@ -75,63 +76,65 @@ export function BookFormModal({ open, onOpenChange, book }: BookFormModalProps) 
     <Modal
       open={open}
       onOpenChange={onOpenChange}
-      title={isEdit ? "Edit book" : "Add book"}
-      description={
-        isEdit ? "Update book details in the catalog." : "Add a new book to the library catalog."
-      }
+      title={isEdit ? ru.admin.editBook : ru.admin.addBook}
+      description={isEdit ? ru.admin.editBookDesc : ru.admin.addBookDesc}
       contentClassName="sm:max-w-md"
       footer={
         <>
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
-            Cancel
+            {ru.common.cancel}
           </Button>
           <Button onClick={handleSubmit(onSubmit)} disabled={isPending}>
             {isPending ? (
               <>
                 <Spinner size="sm" className="text-primary-foreground" />
-                {isEdit ? "Saving..." : "Adding..."}
+                {isEdit ? ru.admin.saving : ru.admin.adding}
               </>
             ) : isEdit ? (
-              "Save changes"
+              ru.admin.saveChanges
             ) : (
-              "Add book"
+              ru.admin.addBook
             )}
           </Button>
         </>
       }
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-        <FormField label="Title" htmlFor="book-title" error={errors.title?.message}>
+        <FormField label={ru.books.titleField} htmlFor="book-title" error={errors.title?.message}>
           <Input
             id="book-title"
-            placeholder="Clean Code"
+            placeholder={ru.admin.exampleTitle}
             disabled={isPending}
             aria-invalid={Boolean(errors.title)}
             {...register("title")}
           />
         </FormField>
 
-        <FormField label="Author" htmlFor="book-author" error={errors.author?.message}>
+        <FormField label={ru.books.author} htmlFor="book-author" error={errors.author?.message}>
           <Input
             id="book-author"
-            placeholder="Robert C. Martin"
+            placeholder={ru.admin.exampleAuthor}
             disabled={isPending}
             aria-invalid={Boolean(errors.author)}
             {...register("author")}
           />
         </FormField>
 
-        <FormField label="Category" htmlFor="book-category" error={errors.category?.message}>
+        <FormField
+          label={ru.books.categoryLabel}
+          htmlFor="book-category"
+          error={errors.category?.message}
+        >
           <Input
             id="book-category"
-            placeholder="Programming"
+            placeholder={ru.admin.exampleCategory}
             disabled={isPending}
             aria-invalid={Boolean(errors.category)}
             {...register("category")}
           />
         </FormField>
 
-        <FormField label="Cover URL" htmlFor="book-cover" error={errors.coverUrl?.message}>
+        <FormField label={ru.admin.coverUrl} htmlFor="book-cover" error={errors.coverUrl?.message}>
           <Input
             id="book-cover"
             placeholder="https://..."

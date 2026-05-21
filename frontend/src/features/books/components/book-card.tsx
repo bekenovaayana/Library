@@ -15,6 +15,7 @@ import { Button } from "@/shared/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/shared/ui/card";
 import { bookDetailRoute } from "@/shared/constants/routes";
 import type { Book } from "@/features/books/types/book";
+import { bookStatusLabel, ru } from "@/shared/i18n";
 
 interface BookCardProps {
   book: Book;
@@ -23,11 +24,9 @@ interface BookCardProps {
 
 const statusConfig = {
   AVAILABLE: {
-    label: "Available",
     className: "bg-emerald-500/15 text-emerald-700 ring-1 ring-emerald-500/20 dark:text-emerald-400",
   },
   BORROWED: {
-    label: "Borrowed",
     className: "bg-amber-500/15 text-amber-700 ring-1 ring-amber-500/20 dark:text-amber-400",
   },
 } as const;
@@ -70,7 +69,7 @@ export function BookCard({ book, className }: BookCardProps) {
               status.className,
             )}
           >
-            {status.label}
+            {bookStatusLabel(book.status)}
           </span>
         </div>
         <span className="inline-flex w-fit max-w-full rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
@@ -88,7 +87,7 @@ export function BookCard({ book, className }: BookCardProps) {
       <CardFooter className="flex flex-col gap-2 border-t bg-muted/20 p-3 sm:p-4">
         <div className="grid grid-cols-2 gap-2">
           <Button variant="outline" size="sm" asChild className="h-9 w-full text-xs sm:text-sm">
-            <Link href={bookDetailRoute(book.id)}>Details</Link>
+            <Link href={bookDetailRoute(book.id)}>{ru.books.details}</Link>
           </Button>
           {book.status === "AVAILABLE" ? (
             <BorrowButton

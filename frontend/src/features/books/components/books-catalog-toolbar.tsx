@@ -7,6 +7,7 @@ import { BookSearchBar } from "@/features/books/components/book-search-bar";
 import { Button } from "@/shared/ui/button";
 import { cn } from "@/shared/lib/utils";
 import type { AvailabilityFilter } from "@/features/books/types/book";
+import { ru } from "@/shared/i18n";
 
 interface BooksCatalogToolbarProps {
   query: string;
@@ -40,7 +41,7 @@ export function BooksCatalogToolbar({
   return (
     <section
       className="rounded-xl border bg-card/50 p-4 shadow-sm backdrop-blur-sm md:p-5"
-      aria-label="Search and filters"
+      aria-label={ru.books.filtersAria}
     >
       <BookSearchBar query={query} onQueryChange={onQueryChange} disabled={disabled} />
 
@@ -56,11 +57,11 @@ export function BooksCatalogToolbar({
         >
           <span className="flex items-center gap-2">
             <SlidersHorizontal className="h-4 w-4" />
-            Filters & sorting
+            {ru.books.filtersSorting}
           </span>
           {hasActiveFilters && (
             <span className="rounded-full bg-primary px-2 py-0.5 text-xs text-primary-foreground">
-              Active
+              {ru.books.filterActive}
             </span>
           )}
         </Button>

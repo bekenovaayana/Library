@@ -11,6 +11,7 @@ import {
   LendingTermsSummary,
   type LendingTerms,
 } from "@/features/borrow/components/lending-terms-summary";
+import { ru } from "@/shared/i18n";
 
 interface BorrowButtonProps {
   bookId: number;
@@ -51,7 +52,7 @@ export function BorrowButton({
         className={className}
         disabled={isUnavailable || isPending}
         onClick={() => setOpen(true)}
-        title={isUnavailable ? "Book is not available" : "Borrow this book"}
+        title={isUnavailable ? ru.borrow.notAvailable : ru.borrow.borrowThis}
       >
         {isPending ? (
           <>
@@ -61,7 +62,7 @@ export function BorrowButton({
         ) : (
           <>
             <BookMarked className="h-4 w-4 shrink-0" />
-            <span className="truncate">Borrow</span>
+            <span className="truncate">{ru.borrow.borrow}</span>
           </>
         )}
       </Button>
@@ -69,21 +70,21 @@ export function BorrowButton({
       <Modal
         open={open}
         onOpenChange={setOpen}
-        title="Confirm borrow"
-        description={`Do you want to borrow "${bookTitle}"?`}
+        title={ru.borrow.confirmBorrow}
+        description={ru.borrow.confirmBorrowDesc(bookTitle)}
         footer={
           <>
             <Button variant="outline" onClick={() => setOpen(false)} disabled={isPending}>
-              Cancel
+              {ru.common.cancel}
             </Button>
             <Button onClick={handleConfirm} disabled={isPending}>
               {isPending ? (
                 <>
                   <Spinner size="sm" className="text-primary-foreground" />
-                  Confirming...
+                  {ru.borrow.confirming}
                 </>
               ) : (
-                "Confirm borrow"
+                ru.borrow.confirmBorrow
               )}
             </Button>
           </>
@@ -91,9 +92,7 @@ export function BorrowButton({
       >
         <div className="space-y-4">
           <LendingTermsSummary terms={lendingTerms} />
-          <p className="text-sm text-muted-foreground">
-            The book will be added to your account. Return it by the due date to avoid late fees.
-          </p>
+          <p className="text-sm text-muted-foreground">{ru.borrow.borrowHint}</p>
         </div>
       </Modal>
     </>

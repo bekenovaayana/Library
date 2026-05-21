@@ -9,6 +9,7 @@ import type { UserRole } from "@/shared/types/auth";
 import { ROUTES } from "@/shared/constants/routes";
 import { Spinner } from "@/shared/components/spinner";
 import { ErrorState } from "@/shared/components/error-state";
+import { ru } from "@/shared/i18n";
 
 interface RoleGuardProps {
   roles: UserRole[];
@@ -26,7 +27,7 @@ export function RoleGuard({ roles, children, fallback }: RoleGuardProps) {
 
   useEffect(() => {
     if (hasHydrated && isAuthenticated && user && !hasAccess) {
-      showErrorToast("You do not have permission to access this page");
+      showErrorToast(ru.errors.noPermission);
       router.replace(ROUTES.DASHBOARD);
     }
   }, [hasHydrated, isAuthenticated, user, hasAccess, router]);
@@ -43,8 +44,8 @@ export function RoleGuard({ roles, children, fallback }: RoleGuardProps) {
     return (
       fallback ?? (
         <ErrorState
-          title="Access denied"
-          message="You do not have the required permissions to view this content."
+          title={ru.errors.accessDenied}
+          message={ru.errors.accessDeniedHint}
         />
       )
     );

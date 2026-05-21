@@ -11,6 +11,7 @@ import { Input } from "@/shared/ui/input";
 import { PasswordInput } from "@/shared/ui/password-input";
 import { Spinner } from "@/shared/components/spinner";
 import { ROUTES } from "@/shared/constants/routes";
+import { ru } from "@/shared/i18n";
 
 export function RegisterForm() {
   const registerMutation = useRegister();
@@ -38,10 +39,10 @@ export function RegisterForm() {
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-        <FormField label="Username" htmlFor="username" error={errors.username?.message}>
+        <FormField label={ru.auth.username} htmlFor="username" error={errors.username?.message}>
           <Input
             id="username"
-            placeholder="johndoe"
+            placeholder={ru.auth.usernamePlaceholder}
             autoComplete="username"
             disabled={isPending}
             aria-invalid={Boolean(errors.username)}
@@ -49,11 +50,11 @@ export function RegisterForm() {
           />
         </FormField>
 
-        <FormField label="Email" htmlFor="email" error={errors.email?.message}>
+        <FormField label={ru.auth.email} htmlFor="email" error={errors.email?.message}>
           <Input
             id="email"
             type="email"
-            placeholder="you@example.com"
+            placeholder={ru.auth.emailPlaceholder}
             autoComplete="email"
             disabled={isPending}
             aria-invalid={Boolean(errors.email)}
@@ -61,10 +62,10 @@ export function RegisterForm() {
           />
         </FormField>
 
-        <FormField label="Password" htmlFor="password" error={errors.password?.message}>
+        <FormField label={ru.auth.password} htmlFor="password" error={errors.password?.message}>
           <PasswordInput
             id="password"
-            placeholder="••••••••"
+            placeholder={ru.auth.passwordPlaceholder}
             autoComplete="new-password"
             disabled={isPending}
             aria-invalid={Boolean(errors.password)}
@@ -73,13 +74,13 @@ export function RegisterForm() {
         </FormField>
 
         <FormField
-          label="Confirm password"
+          label={ru.auth.confirmPassword}
           htmlFor="confirmPassword"
           error={errors.confirmPassword?.message}
         >
           <PasswordInput
             id="confirmPassword"
-            placeholder="••••••••"
+            placeholder={ru.auth.passwordPlaceholder}
             autoComplete="new-password"
             disabled={isPending}
             aria-invalid={Boolean(errors.confirmPassword)}
@@ -91,22 +92,22 @@ export function RegisterForm() {
           {isPending ? (
             <>
               <Spinner size="sm" className="text-primary-foreground" />
-              Creating account...
+              {ru.auth.creatingAccount}
             </>
           ) : (
-            "Create account"
+            ru.auth.createAccount
           )}
         </Button>
       </form>
 
       <p className="mt-4 text-center text-sm text-muted-foreground">
-        Already have an account?{" "}
+        {ru.auth.hasAccount}{" "}
         <Link
           href={ROUTES.LOGIN}
           className="font-medium text-primary hover:underline"
           tabIndex={isPending ? -1 : 0}
         >
-          Sign in
+          {ru.auth.signIn}
         </Link>
       </p>
     </>

@@ -1,4 +1,5 @@
 import { cn } from "@/shared/lib/utils";
+import { roleLabel } from "@/shared/i18n";
 import type { UserRole } from "@/shared/types/auth";
 
 const styles: Record<UserRole, string> = {
@@ -15,7 +16,7 @@ export function RoleBadge({ role, className }: { role: UserRole; className?: str
         className,
       )}
     >
-      {role}
+      {roleLabel(role)}
     </span>
   );
 }

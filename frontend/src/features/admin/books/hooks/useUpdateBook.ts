@@ -9,6 +9,7 @@ import { updateBooksListCache } from "@/features/admin/books/hooks/update-books-
 import type { Book, BookPayload } from "@/features/books/types/book";
 import type { PaginatedResponse } from "@/shared/types/api";
 import { getApiErrorMessage } from "@/services/api/apiClient";
+import { ru } from "@/shared/i18n";
 
 interface UpdateBookVariables {
   id: number;
@@ -37,7 +38,7 @@ export function useUpdateBook() {
       return { snapshots };
     },
     onSuccess: (data) => {
-      toast.success(`"${data.title}" has been updated`);
+      toast.success(ru.admin.bookUpdated(data.title));
       void queryClient.invalidateQueries({ queryKey: bookKeys.all });
       void queryClient.invalidateQueries({ queryKey: bookKeys.detail(data.id) });
       void queryClient.invalidateQueries({ queryKey: adminKeys.statistics() });

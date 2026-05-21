@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/shared/components/table";
 import type { BorrowRecord } from "@/features/borrow/types/borrow";
+import { ru } from "@/shared/i18n";
 
 interface BorrowedBooksTableProps {
   records: BorrowRecord[];
@@ -24,12 +25,12 @@ export function BorrowedBooksTable({ records, showActions = true }: BorrowedBook
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Book</TableHead>
-            <TableHead>Borrowed</TableHead>
-            <TableHead>Due</TableHead>
-            <TableHead>Returned</TableHead>
-            <TableHead>Status</TableHead>
-            {showActions && <TableHead className="text-right">Actions</TableHead>}
+            <TableHead>{ru.borrow.tableBook}</TableHead>
+            <TableHead>{ru.borrow.tableBorrowed}</TableHead>
+            <TableHead>{ru.borrow.tableDue}</TableHead>
+            <TableHead>{ru.borrow.tableReturned}</TableHead>
+            <TableHead>{ru.borrow.tableStatus}</TableHead>
+            {showActions && <TableHead className="text-right">{ru.borrow.tableActions}</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>

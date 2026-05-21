@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { APIErrorHandler } from "@/shared/ux/api/api-error-handler";
+import { ru } from "@/shared/i18n";
 import type { ApiErrorResponse } from "@/shared/types/api";
 
 describe("APIErrorHandler", () => {
@@ -32,7 +33,7 @@ describe("APIErrorHandler", () => {
     const parsed = APIErrorHandler.parse(error);
 
     expect(parsed.kind).toBe("network");
-    expect(parsed.message).toContain("Unable to reach the server");
+    expect(parsed.message).toBe(ru.errors.network);
   });
 
   it("maps 500 responses to server kind", () => {

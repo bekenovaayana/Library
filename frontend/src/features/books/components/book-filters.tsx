@@ -5,6 +5,7 @@ import { Button } from "@/shared/ui/button";
 import { CategoryAutocomplete } from "@/features/books/components/category-autocomplete";
 import { cn } from "@/shared/lib/utils";
 import { SORT_OPTIONS, type AvailabilityFilter } from "@/features/books/types/book";
+import { bookStatusLabel, ru } from "@/shared/i18n";
 
 interface BookFiltersProps {
   category: string;
@@ -41,14 +42,14 @@ export function BookFilters({
       {showHeading && (
         <div className="hidden items-center gap-2 text-sm font-medium text-muted-foreground lg:flex">
           <Filter className="h-4 w-4" />
-          Filters & sorting
+          {ru.books.filtersSorting}
         </div>
       )}
 
       <div className="grid gap-3 xs:grid-cols-2 lg:grid-cols-4">
         <div className="space-y-1.5">
           <label htmlFor="category-filter" className="text-xs font-medium text-muted-foreground">
-            Category
+            {ru.books.category}
           </label>
           <CategoryAutocomplete
             id="category-filter"
@@ -60,7 +61,7 @@ export function BookFilters({
 
         <div className="space-y-1.5">
           <label htmlFor="status-filter" className="text-xs font-medium text-muted-foreground">
-            Availability
+            {ru.books.availability}
           </label>
           <select
             id="status-filter"
@@ -69,15 +70,15 @@ export function BookFilters({
             disabled={disabled}
             className={selectClassName}
           >
-            <option value="ALL">All</option>
-            <option value="AVAILABLE">Available</option>
-            <option value="BORROWED">Borrowed</option>
+            <option value="ALL">{ru.common.all}</option>
+            <option value="AVAILABLE">{bookStatusLabel("AVAILABLE")}</option>
+            <option value="BORROWED">{bookStatusLabel("BORROWED")}</option>
           </select>
         </div>
 
         <div className="space-y-1.5 xs:col-span-2 lg:col-span-1">
           <label htmlFor="sort-filter" className="text-xs font-medium text-muted-foreground">
-            Sort by
+            {ru.books.sortBy}
           </label>
           <select
             id="sort-filter"
@@ -102,7 +103,7 @@ export function BookFilters({
             className="w-full min-h-10"
           >
             <X className="mr-2 h-4 w-4" />
-            Clear filters
+            {ru.books.clearFilters}
           </Button>
         </div>
       </div>

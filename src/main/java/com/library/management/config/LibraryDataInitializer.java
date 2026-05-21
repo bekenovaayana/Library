@@ -39,19 +39,56 @@ public class LibraryDataInitializer implements CommandLineRunner {
                 book("1984", "George Orwell", "Fiction"),
                 book("To Kill a Mockingbird", "Harper Lee", "Fiction"),
                 book("Sapiens", "Yuval Noah Harari", "History"),
-                book("A Brief History of Time", "Stephen Hawking", "Science")
+                book("A Brief History of Time", "Stephen Hawking", "Science"),
+                book(
+                        "The Lord of the Rings",
+                        "J.R.R. Tolkien",
+                        "Fantasy",
+                        "https://upload.wikimedia.org/wikipedia/en/e/e9/First_Single_Volume_Edition_of_The_Lord_of_the_Rings.gif"
+                ),
+                book(
+                        "Dune",
+                        "Frank Herbert",
+                        "Science Fiction",
+                        "https://upload.wikimedia.org/wikipedia/en/d/de/Dune-Frank_Herbert_%281965%29_First_edition.jpg"
+                ),
+                book(
+                        "Atomic Habits",
+                        "James Clear",
+                        "Self-Development",
+                        "https://upload.wikimedia.org/wikipedia/en/2/28/Atomic_Habits_book_cover.jpg"
+                ),
+                book(
+                        "The Alchemist",
+                        "Paulo Coelho",
+                        "Fiction",
+                        "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/TheAlchemist.jpg/330px-TheAlchemist.jpg"
+                ),
+                book(
+                        "Thinking, Fast and Slow",
+                        "Daniel Kahneman",
+                        "Psychology",
+                        "https://upload.wikimedia.org/wikipedia/en/c/c1/Thinking%2C_Fast_and_Slow.jpg"
+                )
         ));
     }
 
     private static Book book(String title, String author, String category) {
+        return book(
+                title,
+                author,
+                category,
+                "https://placehold.co/240x360/e2e8f0/334155?text=" + title.replace(' ', '+')
+        );
+    }
+
+    private static Book book(String title, String author, String category, String coverUrl) {
         Book book = new Book();
         book.setTitle(title);
         book.setAuthor(author);
         book.setCategory(category);
         book.setStatus(BookStatus.AVAILABLE);
-        book.setCoverUrl(
-                "https://placehold.co/240x360/e2e8f0/334155?text=" + title.replace(' ', '+')
-        );
+        book.setCoverUrl(coverUrl);
         return book;
     }
 }

@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/shared/lib/seo";
+import { ru } from "@/shared/i18n";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: siteConfig.name,
-    short_name: "Library",
+    short_name: ru.app.shortName,
     description: siteConfig.description,
     start_url: "/",
     display: "standalone",
@@ -12,7 +13,7 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#18181b",
     orientation: "portrait-primary",
     scope: "/",
-    lang: "en",
+    lang: "ru",
     categories: ["books", "education", "productivity"],
     icons: [
       {

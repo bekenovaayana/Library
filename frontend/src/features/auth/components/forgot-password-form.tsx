@@ -13,6 +13,7 @@ import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Spinner } from "@/shared/components/spinner";
 import { ROUTES } from "@/shared/constants/routes";
+import { ru } from "@/shared/i18n";
 
 export function ForgotPasswordForm() {
   const mutation = useForgotPassword();
@@ -29,11 +30,11 @@ export function ForgotPasswordForm() {
   return (
     <>
       <form onSubmit={handleSubmit((values) => mutation.mutate(values))} className="space-y-4" noValidate>
-        <FormField label="Email" htmlFor="email" error={errors.email?.message}>
+        <FormField label={ru.auth.email} htmlFor="email" error={errors.email?.message}>
           <Input
             id="email"
             type="email"
-            placeholder="you@example.com"
+            placeholder={ru.auth.emailPlaceholder}
             autoComplete="email"
             disabled={mutation.isPending}
             aria-invalid={Boolean(errors.email)}
@@ -45,17 +46,17 @@ export function ForgotPasswordForm() {
           {mutation.isPending ? (
             <>
               <Spinner size="sm" className="text-primary-foreground" />
-              Sending...
+              {ru.auth.sending}
             </>
           ) : (
-            "Send reset link"
+            ru.auth.sendResetLink
           )}
         </Button>
       </form>
 
       <p className="mt-4 text-center text-sm text-muted-foreground">
         <Link href={ROUTES.LOGIN} className="font-medium text-primary hover:underline">
-          Back to sign in
+          {ru.auth.backToSignIn}
         </Link>
       </p>
     </>

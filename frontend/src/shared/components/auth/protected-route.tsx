@@ -6,6 +6,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useAuthHydration } from "@/features/auth/hooks/useAuthHydration";
 import { ROUTES } from "@/shared/constants/routes";
 import { FullPageLoader } from "@/shared/ux/components/full-page-loader";
+import { ru } from "@/shared/i18n";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -25,7 +26,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   }, [hasHydrated, isAuthenticated, pathname, router]);
 
   if (!hasHydrated || !isAuthenticated) {
-    return <FullPageLoader message="Checking authentication..." />;
+    return <FullPageLoader message={ru.errors.checkingAuth} />;
   }
 
   return <>{children}</>;

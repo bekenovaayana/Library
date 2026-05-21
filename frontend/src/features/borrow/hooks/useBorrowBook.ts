@@ -13,6 +13,7 @@ import { formatBorrowDate } from "@/features/borrow/utils/format-date";
 import { formatMoney } from "@/features/borrow/utils/format-money";
 import { getApiErrorMessage } from "@/services/api/apiClient";
 import { useAuthStore } from "@/store/authStore";
+import { ru } from "@/shared/i18n";
 
 interface BorrowContext {
   previousBookDetail?: BookDetail;
@@ -53,7 +54,12 @@ export function useBorrowBook() {
       const finePerDay = detail?.finePerDay ?? 0;
       const maxFine = detail?.maxFine ?? 0;
       toast.success(
-        `Borrowed "${data.bookTitle}". Return by ${dueText}. Late fee: ${formatMoney(finePerDay)}/day (max ${formatMoney(maxFine)}).`,
+        ru.borrow.successToast(
+          data.bookTitle,
+          dueText,
+          formatMoney(finePerDay),
+          formatMoney(maxFine),
+        ),
         { duration: 6000 },
       );
       void queryClient.invalidateQueries({ queryKey: borrowKeys.my() });

@@ -2,6 +2,8 @@
  * Centralized public environment configuration.
  * Only NEXT_PUBLIC_* variables are available in the browser bundle.
  */
+import { ru } from "@/shared/i18n";
+
 function readEnv(name: string, fallback: string): string {
   const value = process.env[name]?.trim();
   return value && value.length > 0 ? value : fallback;
@@ -9,7 +11,7 @@ function readEnv(name: string, fallback: string): string {
 
 /** Relative URL uses Next.js dev proxy (see next.config.ts rewrites). */
 const defaultApiUrl = "/api";
-const defaultAppName = "Library Management System";
+const defaultAppName = ru.app.name;
 const defaultAppUrl = "http://localhost:3000";
 
 export const env = {

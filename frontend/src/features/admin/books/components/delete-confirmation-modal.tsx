@@ -1,6 +1,7 @@
 "use client";
 
 import { ConfirmModal } from "@/shared/components/confirm-modal";
+import { ru } from "@/shared/i18n";
 
 interface DeleteConfirmationModalProps {
   open: boolean;
@@ -21,17 +22,14 @@ export function DeleteConfirmationModal({
     <ConfirmModal
       open={open}
       onOpenChange={onOpenChange}
-      title="Delete book"
-      description={`Are you sure you want to delete "${bookTitle}"?`}
-      confirmLabel="Delete"
+      title={ru.admin.deleteBook}
+      description={ru.admin.deleteConfirm(bookTitle)}
+      confirmLabel={ru.common.delete}
       variant="destructive"
       onConfirm={onConfirm}
       isLoading={isLoading}
     >
-      <p className="text-sm text-muted-foreground">
-        This will permanently remove the book from the catalog. Books that are currently borrowed
-        cannot be deleted.
-      </p>
+      <p className="text-sm text-muted-foreground">{ru.admin.deleteHint}</p>
     </ConfirmModal>
   );
 }

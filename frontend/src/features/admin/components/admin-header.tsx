@@ -3,6 +3,7 @@
 import { Menu, RefreshCw } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Spinner } from "@/shared/components/spinner";
+import { ru } from "@/shared/i18n";
 
 interface AdminHeaderProps {
   title: string;
@@ -28,7 +29,7 @@ export function AdminHeader({
             size="icon"
             className="shrink-0 lg:hidden"
             onClick={onMenuClick}
-            aria-label="Open admin menu"
+            aria-label={ru.admin.openAdminMenu}
           >
             <Menu className="h-5 w-5" />
           </Button>
@@ -52,7 +53,7 @@ export function AdminHeader({
           ) : (
             <RefreshCw className="mr-2 h-4 w-4" />
           )}
-          Refresh
+          {ru.common.refresh}
         </Button>
       ) : null}
     </header>

@@ -1,3 +1,4 @@
+import { ru } from "@/shared/i18n";
 import { APIErrorHandler } from "@/shared/ux/api/api-error-handler";
 import { FallbackUI } from "@/shared/ux/components/fallback-ui";
 
@@ -15,7 +16,7 @@ export function ErrorState({
   message,
   error,
   onRetry,
-  retryLabel = "Try again",
+  retryLabel = ru.common.retry,
   className,
 }: ErrorStateProps) {
   const parsed = error ? APIErrorHandler.parse(error) : null;
@@ -23,7 +24,7 @@ export function ErrorState({
   return (
     <FallbackUI
       title={title}
-      message={message ?? parsed?.message ?? "An unexpected error occurred. Please try again."}
+      message={message ?? parsed?.message ?? ru.errors.unexpected}
       kind={parsed?.kind ?? "unknown"}
       onRetry={onRetry}
       retryLabel={retryLabel}

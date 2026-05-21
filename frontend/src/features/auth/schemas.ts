@@ -1,49 +1,49 @@
 import { z } from "zod";
+import { ru } from "@/shared/i18n";
+
+const v = ru.validation;
 
 export const loginSchema = z.object({
-  email: z.string().min(1, "Email is required").email("Invalid email address"),
-  password: z
-    .string()
-    .min(1, "Password is required")
-    .min(8, "Password must be at least 8 characters"),
+  email: z.string().min(1, v.emailRequired).email(v.emailInvalid),
+  password: z.string().min(1, v.passwordRequired).min(8, v.passwordMin8),
 });
 
 export const registerSchema = z
   .object({
     username: z
       .string()
-      .min(1, "Username is required")
-      .min(3, "Username must be at least 3 characters")
-      .max(50, "Username must not exceed 50 characters"),
-    email: z.string().min(1, "Email is required").email("Invalid email address"),
+      .min(1, v.usernameRequired)
+      .min(3, v.usernameMin3)
+      .max(50, v.usernameMax50),
+    email: z.string().min(1, v.emailRequired).email(v.emailInvalid),
     password: z
       .string()
-      .min(1, "Password is required")
-      .min(8, "Password must be at least 8 characters")
-      .max(100, "Password must not exceed 100 characters"),
-    confirmPassword: z.string().min(1, "Please confirm your password"),
+      .min(1, v.passwordRequired)
+      .min(8, v.passwordMin8)
+      .max(100, v.passwordMax100),
+    confirmPassword: z.string().min(1, v.confirmPassword),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
+    message: v.passwordsMismatch,
     path: ["confirmPassword"],
   });
 
 export const forgotPasswordSchema = z.object({
-  email: z.string().min(1, "Email is required").email("Invalid email address"),
+  email: z.string().min(1, v.emailRequired).email(v.emailInvalid),
 });
 
 export const resetPasswordSchema = z
   .object({
-    token: z.string().min(1, "Reset token is required"),
+    token: z.string().min(1, v.tokenRequired),
     newPassword: z
       .string()
-      .min(1, "Password is required")
-      .min(8, "Password must be at least 8 characters")
-      .max(100, "Password must not exceed 100 characters"),
-    confirmPassword: z.string().min(1, "Please confirm your password"),
+      .min(1, v.passwordRequired)
+      .min(8, v.passwordMin8)
+      .max(100, v.passwordMax100),
+    confirmPassword: z.string().min(1, v.confirmPassword),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Passwords do not match",
+    message: v.passwordsMismatch,
     path: ["confirmPassword"],
   });
 
@@ -51,21 +51,21 @@ export const changePasswordSchema = z
   .object({
     currentPassword: z
       .string()
-      .min(1, "Current password is required")
-      .min(8, "Password must be at least 8 characters"),
+      .min(1, v.currentPasswordRequired)
+      .min(8, v.passwordMin8),
     newPassword: z
       .string()
-      .min(1, "New password is required")
-      .min(8, "Password must be at least 8 characters")
-      .max(100, "Password must not exceed 100 characters"),
-    confirmPassword: z.string().min(1, "Please confirm your password"),
+      .min(1, v.newPasswordRequired)
+      .min(8, v.passwordMin8)
+      .max(100, v.passwordMax100),
+    confirmPassword: z.string().min(1, v.confirmPassword),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Passwords do not match",
+    message: v.passwordsMismatch,
     path: ["confirmPassword"],
   })
   .refine((data) => data.currentPassword !== data.newPassword, {
-    message: "New password must be different from current password",
+    message: v.newPasswordDifferent,
     path: ["newPassword"],
   });
 
